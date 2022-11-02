@@ -153,6 +153,7 @@ def run_tree(args=None):
 
     # Upsample prototype for visualization
     project_info = upsample(tree, project_info, projectloader, name, args, log)
+    
     # visualize tree
     gen_vis(tree, name, args, classes)
 
