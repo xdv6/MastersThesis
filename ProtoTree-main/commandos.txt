@@ -1,0 +1,1 @@
+python main_explain_local.py --log_dir ./runs/protoree_cub --dataset CUB-200-2011 --sample_dir ./data/CUB_200_2011/dataset/test_full/017.Cardinal/Cardinal_0001_17057.jpg  --prototree ./runs/protoree_cub/checkpoints/pruned_and_projected
