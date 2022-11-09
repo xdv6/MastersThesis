@@ -25,6 +25,8 @@ def get_data(args: argparse.Namespace):
         return get_birds(True, './data/CUB_200_2011/dataset/train_corners', './data/CUB_200_2011/dataset/train_crop', './data/CUB_200_2011/dataset/test_full')
     if args.dataset == 'CARS':
         return get_cars(True, './data/cars/dataset/train', './data/cars/dataset/train', './data/cars/dataset/test')
+    if args.dataset == 'frozen_lake':
+        return get_lake(True, './data/frozen_lake/dataset/train', './data/frozen_lake/dataset/train', './data/frozen_lake/dataset/train')
     raise Exception(f'Could not load data set "{args.dataset}"!')
 
 def get_dataloaders(args: argparse.Namespace):
@@ -126,6 +128,16 @@ def get_cars(augment: bool, train_dir:str, project_dir: str, test_dir:str, img_s
     testset = torchvision.datasets.ImageFolder(test_dir, transform=transform_no_augment)
     classes = trainset.classes
     
+    return trainset, projectset, testset, classes, shape
+
+
+def get_lake(augment: bool, train_dir:str, project_dir: str, test_dir:str, img_size = 40): 
+    shape = (3, img_size, img_size)
+    trainset = torchvision.datasets.ImageFolder(train_dir)
+    projectset = torchvision.datasets.ImageFolder(project_dir)
+    testset = torchvision.datasets.ImageFolder(test_dir)
+    classes = trainset.classes
+
     return trainset, projectset, testset, classes, shape
 
 
