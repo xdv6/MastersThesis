@@ -10,7 +10,7 @@ import torchvision.transforms as transforms
 from torchvision.transforms import ToTensor, Normalize, Compose, Lambda
 
 
-def get_data(args: argparse.Namespace): 
+def get_data(args: argparse.Namespace):
     """
     Load the proper dataset based on the parsed arguments
     :param args: The arguments in which is specified which dataset should be used
@@ -21,20 +21,21 @@ def get_data(args: argparse.Namespace):
                 - a tuple containing all possible class labels
                 - a tuple containing the shape (depth, width, height) of the input images
     """
-    if args.dataset =='CUB-200-2011':
+    if args.dataset == 'CUB-200-2011':
         return get_birds(True, './data/CUB_200_2011/dataset/train_corners', './data/CUB_200_2011/dataset/train_crop', './data/CUB_200_2011/dataset/test_full')
     if args.dataset == 'CARS':
         return get_cars(True, './data/cars/dataset/train', './data/cars/dataset/train', './data/cars/dataset/test')
     if args.dataset == 'frozen_lake':
-        return get_lake(True, './data/frozen_lake/dataset/train', './data/frozen_lake/dataset/train', './data/frozen_lake/dataset/train')
+        return get_lake(True, './data/frozen_lake/dataset', './data/frozen_lake/dataset', './data/frozen_lake/dataset')
     raise Exception(f'Could not load data set "{args.dataset}"!')
+
 
 def get_dataloaders(args: argparse.Namespace):
     """
     Get data loaders
     """
     # Obtain the dataset
-    trainset, projectset, testset, classes, shape  = get_data(args)
+    trainset, projectset, testset, classes, shape = get_data(args)
     c, w, h = shape
     # Determine if GPU should be used
     cuda = not args.disable_cuda and torch.cuda.is_available()
@@ -45,12 +46,14 @@ def get_dataloaders(args: argparse.Namespace):
                                               num_workers=3
                                               )
     projectloader = torch.utils.data.DataLoader(projectset,
-                                            #    batch_size=args.batch_size,
-                                              batch_size=int(args.batch_size/4), #make batch size smaller to prevent out of memory errors during projection
-                                              shuffle=False,
-                                              pin_memory=cuda,
-                                              num_workers=3
-                                              )
+                                                #    batch_size=args.batch_size,
+                                                # make batch size smaller to prevent out of memory errors during projection
+                                                batch_size=int(
+                                                    args.batch_size/4),
+                                                shuffle=False,
+                                                pin_memory=cuda,
+                                                num_workers=3
+                                                )
     testloader = torch.utils.data.DataLoader(testset,
                                              batch_size=args.batch_size,
                                              shuffle=False,
@@ -61,24 +64,26 @@ def get_dataloaders(args: argparse.Namespace):
     return trainloader, projectloader, testloader, classes, c
 
 
-def get_birds(augment: bool, train_dir:str, project_dir: str, test_dir:str, img_size = 224): 
+def get_birds(augment: bool, train_dir: str, project_dir: str, test_dir: str, img_size=224):
     shape = (3, img_size, img_size)
     mean = (0.485, 0.456, 0.406)
     std = (0.229, 0.224, 0.225)
-    normalize = transforms.Normalize(mean=mean,std=std)
+    normalize = transforms.Normalize(mean=mean, std=std)
     transform_no_augment = transforms.Compose([
-                            transforms.Resize(size=(img_size, img_size)),
-                            transforms.ToTensor(),
-                            normalize
-                        ])
+        transforms.Resize(size=(img_size, img_size)),
+        transforms.ToTensor(),
+        normalize
+    ])
     if augment:
         transform = transforms.Compose([
             transforms.Resize(size=(img_size, img_size)),
             transforms.RandomOrder([
-            transforms.RandomPerspective(distortion_scale=0.2, p = 0.5),
-            transforms.ColorJitter((0.6,1.4), (0.6,1.4), (0.6,1.4), (-0.02,0.02)),
-            transforms.RandomHorizontalFlip(),
-            transforms.RandomAffine(degrees=10, shear=(-2,2),translate=[0.05,0.05]),
+                transforms.RandomPerspective(distortion_scale=0.2, p=0.5),
+                transforms.ColorJitter(
+                    (0.6, 1.4), (0.6, 1.4), (0.6, 1.4), (-0.02, 0.02)),
+                transforms.RandomHorizontalFlip(),
+                transforms.RandomAffine(
+                    degrees=10, shear=(-2, 2), translate=[0.05, 0.05]),
             ]),
             transforms.ToTensor(),
             normalize,
@@ -87,36 +92,41 @@ def get_birds(augment: bool, train_dir:str, project_dir: str, test_dir:str, img_
         transform = transform_no_augment
 
     trainset = torchvision.datasets.ImageFolder(train_dir, transform=transform)
-    projectset = torchvision.datasets.ImageFolder(project_dir, transform=transform_no_augment)
-    testset = torchvision.datasets.ImageFolder(test_dir, transform=transform_no_augment)
+    projectset = torchvision.datasets.ImageFolder(
+        project_dir, transform=transform_no_augment)
+    testset = torchvision.datasets.ImageFolder(
+        test_dir, transform=transform_no_augment)
     classes = trainset.classes
     for i in range(len(classes)):
-        classes[i]=classes[i].split('.')[1]
+        classes[i] = classes[i].split('.')[1]
     return trainset, projectset, testset, classes, shape
 
 
-def get_cars(augment: bool, train_dir:str, project_dir: str, test_dir:str, img_size = 224): 
+def get_cars(augment: bool, train_dir: str, project_dir: str, test_dir: str, img_size=224):
     shape = (3, img_size, img_size)
     mean = (0.485, 0.456, 0.406)
     std = (0.229, 0.224, 0.225)
 
-    normalize = transforms.Normalize(mean=mean,std=std)
+    normalize = transforms.Normalize(mean=mean, std=std)
     transform_no_augment = transforms.Compose([
-                            transforms.Resize(size=(img_size, img_size)),
-                            transforms.ToTensor(),
-                            normalize
-                        ])
+        transforms.Resize(size=(img_size, img_size)),
+        transforms.ToTensor(),
+        normalize
+    ])
 
     if augment:
         transform = transforms.Compose([
-            transforms.Resize(size=(img_size+32, img_size+32)), #resize to 256x256
+            transforms.Resize(size=(img_size+32, img_size+32)
+                              ),  # resize to 256x256
             transforms.RandomOrder([
-            transforms.RandomPerspective(distortion_scale=0.5, p = 0.5),
-            transforms.ColorJitter((0.6,1.4), (0.6,1.4), (0.6,1.4), (-0.4,0.4)),
-            transforms.RandomHorizontalFlip(),
-            transforms.RandomAffine(degrees=15,shear=(-2,2)),
+                transforms.RandomPerspective(distortion_scale=0.5, p=0.5),
+                transforms.ColorJitter(
+                    (0.6, 1.4), (0.6, 1.4), (0.6, 1.4), (-0.4, 0.4)),
+                transforms.RandomHorizontalFlip(),
+                transforms.RandomAffine(degrees=15, shear=(-2, 2)),
             ]),
-            transforms.RandomCrop(size=(img_size, img_size)), #crop to 224x224
+            transforms.RandomCrop(
+                size=(img_size, img_size)),  # crop to 224x224
             transforms.ToTensor(),
             normalize,
         ])
@@ -124,20 +134,27 @@ def get_cars(augment: bool, train_dir:str, project_dir: str, test_dir:str, img_s
         transform = transform_no_augment
 
     trainset = torchvision.datasets.ImageFolder(train_dir, transform=transform)
-    projectset = torchvision.datasets.ImageFolder(project_dir, transform=transform_no_augment)
-    testset = torchvision.datasets.ImageFolder(test_dir, transform=transform_no_augment)
+    projectset = torchvision.datasets.ImageFolder(
+        project_dir, transform=transform_no_augment)
+    testset = torchvision.datasets.ImageFolder(
+        test_dir, transform=transform_no_augment)
     classes = trainset.classes
-    
+
     return trainset, projectset, testset, classes, shape
 
 
-def get_lake(augment: bool, train_dir:str, project_dir: str, test_dir:str, img_size = 40): 
+def get_lake(augment: bool, train_dir: str, project_dir: str, test_dir: str, img_size=40):
+    transform = transforms.Compose([
+
+        transforms.ToTensor(),
+
+    ])
+
     shape = (3, img_size, img_size)
-    trainset = torchvision.datasets.ImageFolder(train_dir)
-    projectset = torchvision.datasets.ImageFolder(project_dir)
-    testset = torchvision.datasets.ImageFolder(test_dir)
+    trainset = torchvision.datasets.ImageFolder(train_dir, transform=transform)
+    projectset = torchvision.datasets.ImageFolder(
+        project_dir, transform=transform)
+    testset = torchvision.datasets.ImageFolder(test_dir, transform=transform)
     classes = trainset.classes
 
     return trainset, projectset, testset, classes, shape
-
-
