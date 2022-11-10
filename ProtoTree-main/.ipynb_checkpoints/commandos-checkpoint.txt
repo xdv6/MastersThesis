@@ -1,0 +1,8 @@
+LOCAL EXPLANATION:
+python main_explain_local.py --log_dir ./runs/protoree_cub --dataset CUB-200-2011 --sample_dir ./data/CUB_200_2011/dataset/test_full/017.Cardinal/Cardinal_0001_17057.jpg  --prototree ./runs/protoree_cub/checkpoints/pruned_and_projected
+
+PROTOTREE TRAINEN (aangepaste dir om te debuggen):
+python main_tree.py --epochs 100 --log_dir ./runs/test_CUB_dir --dataset CUB-200-2011 --lr 0.001 --lr_block 0.001 --lr_net 1e-5 --num_features 256 --depth 9 --net resnet50_inat --freeze_epochs 30 --milestones 60,70,80,90,100
+
+PROTOTREE TRAINEN FROZEN_LAKE (aangepaste dir om te debuggen):
+python main_tree.py --epochs 100 --log_dir ./runs/test_frozen --dataset frozen_lake --lr 0.001 --lr_block 0.001 --lr_net 1e-5 --num_features 256 --depth 9 --net vgg11 --freeze_epochs 30 --milestones 60,70,80,90,100

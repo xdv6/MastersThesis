@@ -43,7 +43,7 @@ def get_dataloaders(args: argparse.Namespace):
                                               batch_size=args.batch_size,
                                               shuffle=True,
                                               pin_memory=cuda,
-                                              num_workers=10
+                                              num_workers=3
                                               )
     projectloader = torch.utils.data.DataLoader(projectset,
                                                 #    batch_size=args.batch_size,
@@ -52,13 +52,13 @@ def get_dataloaders(args: argparse.Namespace):
                                                     args.batch_size/4),
                                                 shuffle=False,
                                                 pin_memory=cuda,
-                                                num_workers=10
+                                                num_workers=3
                                                 )
     testloader = torch.utils.data.DataLoader(testset,
                                              batch_size=args.batch_size,
                                              shuffle=False,
                                              pin_memory=cuda,
-                                             num_workers=10
+                                             num_workers=3
                                              )
     print("Num classes (k) = ", len(classes), flush=True)
     return trainloader, projectloader, testloader, classes, c
