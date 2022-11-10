@@ -15,7 +15,7 @@ from prototree.train import train_epoch, train_epoch_kontschieder
 from prototree.test import eval, eval_fidelity
 from prototree.prune import prune
 from prototree.project import project, project_with_class_constraints
-from prototree.upsample import upsample
+# from prototree.upsample import upsample
 
 import torch
 from shutil import copy
@@ -167,22 +167,19 @@ def run_tree(args=None):
 
 def install(package):
     # subprocess.check_call([sys.executable, "-m", "pip", "install", package])
-    if package in sys.modules:
-        print(f"{package!r} already in sys.modules")
-    else:
-        subprocess.check_call([sys.executable, "-m", "pip", "install", package])
-        print(f" module {package!r} installed")
-        # If you choose to perform the actual import ...
-        module = importlib.util.module_from_spec(importlib.util.find_spec(package))
-        sys.modules[package] = module
-        importlib.util.find_spec(package).loader.exec_module(module)
+    subprocess.check_call([sys.executable, "-m", "pip", "install", package])
+
 
 
 
 if __name__ == '__main__':
 
-    install(
-
+    
+    install("opencv-python")
+    from prototree.upsample import upsample
+    subprocess.call("sudo add-apt-repository universe", shell=True)
+    subprocess.call("sudo apt update", shell=True)
+    subprocess.call("sudo apt install graphviz", shell=True)
 
     args = get_args()
     run_tree(args)

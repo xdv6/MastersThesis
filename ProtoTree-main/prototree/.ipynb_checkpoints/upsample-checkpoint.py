@@ -23,7 +23,7 @@ def upsample(tree: ProtoTree, project_info: dict, project_loader: DataLoader, fo
             if node in tree.branches: #do not upsample when node is pruned
                 prototype_info = project_info[j]
                 decision_node_idx = prototype_info['node_ix']
-                x = Image.open(imgs[prototype_info['input_image_ix']][0])
+                x = Image.open(imgs[prototype_info['input_image_ix']][0]).convert('RGB')
                 x.save(os.path.join(dir,'%s_original_image.png'%str(decision_node_idx)))
                     
                 x_np = np.asarray(x)

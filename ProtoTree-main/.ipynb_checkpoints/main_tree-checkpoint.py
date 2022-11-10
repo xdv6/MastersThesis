@@ -1,5 +1,8 @@
 from prototree.prototree import ProtoTree
 from util.log import Log
+import subprocess
+import sys
+import importlib.util
 
 from util.args import get_args, save_args, get_optimizer
 from util.data import get_dataloaders
@@ -12,7 +15,7 @@ from prototree.train import train_epoch, train_epoch_kontschieder
 from prototree.test import eval, eval_fidelity
 from prototree.prune import prune
 from prototree.project import project, project_with_class_constraints
-from prototree.upsample import upsample
+# from prototree.upsample import upsample
 
 import torch
 from shutil import copy
@@ -161,6 +164,22 @@ def run_tree(args=None):
     return trained_tree.to('cpu'), pruned_tree.to('cpu'), pruned_projected_tree.to('cpu'), original_test_acc, pruned_test_acc, pruned_projected_test_acc, project_info, eval_info_samplemax, eval_info_greedy, fidelity_info
 
 
+
+def install(package):
+    # subprocess.check_call([sys.executable, "-m", "pip", "install", package])
+    subprocess.check_call([sys.executable, "-m", "pip", "install", package])
+
+
+
+
 if __name__ == '__main__':
+
+    
+    install("opencv-python")
+    from prototree.upsample import upsample
+    subprocess.call("sudo add-apt-repository universe", shell=True)
+    subprocess.call("sudo apt update", shell=True)
+    subprocess.call("sudo apt install graphviz", shell=True)
+
     args = get_args()
     run_tree(args)
