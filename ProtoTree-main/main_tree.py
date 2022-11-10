@@ -165,21 +165,18 @@ def run_tree(args=None):
 
 
 
-def install(package):
-    # subprocess.check_call([sys.executable, "-m", "pip", "install", package])
-    subprocess.check_call([sys.executable, "-m", "pip", "install", package])
 
-
-
-
-if __name__ == '__main__':
-
-    
-    install("opencv-python")
+def get_libraries():
+    subprocess.check_call([sys.executable, "-m", "pip", "install", "opencv-python"])
     from prototree.upsample import upsample
     subprocess.call("sudo add-apt-repository universe", shell=True)
     subprocess.call("sudo apt update", shell=True)
     subprocess.call("sudo apt install graphviz", shell=True)
 
+
+
+if __name__ == '__main__':
+
+    get_libraries()
     args = get_args()
     run_tree(args)

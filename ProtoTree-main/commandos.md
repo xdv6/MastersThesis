@@ -14,7 +14,7 @@
 
 ### ProtoTree trainen frozen_lake 
 
-```python main_tree.py --epochs 100 --log_dir ./runs/test_frozen --dataset frozen_lake --lr 0.001 --lr_block 0.001 --lr_net 1e-5 --num_features 256 --depth 9 --net vgg11 --freeze_epochs 30 --milestones 60,70,80,90,100```
+```python main_tree.py --epochs 100 --log_dir ./runs/test_frozen --dataset frozen_lake --lr 0.001 --lr_block 0.001 --lr_net 1e-5 --num_features 11 --depth 4 --net vgg11 --freeze_epochs 30 --milestones 60,70,80,90,100```
 
 
 
@@ -41,7 +41,7 @@
 ### graphiz installeren
 
 ```
-sudo apt install grahiz
+sudo apt install graphviz
 ```
 
 ### dot file effectief omzetten
