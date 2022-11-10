@@ -1,5 +1,8 @@
 from prototree.prototree import ProtoTree
 from util.log import Log
+import subprocess
+import sys
+import importlib.util
 
 from util.args import get_args, save_args, get_optimizer
 from util.data import get_dataloaders
@@ -161,6 +164,25 @@ def run_tree(args=None):
     return trained_tree.to('cpu'), pruned_tree.to('cpu'), pruned_projected_tree.to('cpu'), original_test_acc, pruned_test_acc, pruned_projected_test_acc, project_info, eval_info_samplemax, eval_info_greedy, fidelity_info
 
 
+
+def install(package):
+    # subprocess.check_call([sys.executable, "-m", "pip", "install", package])
+    if package in sys.modules:
+        print(f"{package!r} already in sys.modules")
+    else:
+        subprocess.check_call([sys.executable, "-m", "pip", "install", package])
+        print(f" module {package!r} installed")
+        # If you choose to perform the actual import ...
+        module = importlib.util.module_from_spec(importlib.util.find_spec(package))
+        sys.modules[package] = module
+        importlib.util.find_spec(package).loader.exec_module(module)
+
+
+
 if __name__ == '__main__':
+
+    install(
+
+
     args = get_args()
     run_tree(args)
