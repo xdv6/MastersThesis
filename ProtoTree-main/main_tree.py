@@ -48,6 +48,7 @@ def run_tree(args=None):
     trainloader, projectloader, testloader, classes, num_channels = get_dataloaders(args)
     # Create a convolutional network based on arguments and add 1x1 conv layer
     features_net, add_on_layers = get_network(num_channels, args)
+    
     # Create a ProtoTree
     tree = ProtoTree(num_classes=len(classes),
                     feature_net = features_net,
