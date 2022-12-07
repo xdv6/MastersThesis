@@ -18,6 +18,11 @@
 
 
 
+```text
+opmerkingen:
+gebruikt geen default num_features want dan krijg je alleen witte kotjes als prototypes
+```
+
 
 
 

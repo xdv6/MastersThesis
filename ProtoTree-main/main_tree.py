@@ -15,7 +15,7 @@ from prototree.train import train_epoch, train_epoch_kontschieder
 from prototree.test import eval, eval_fidelity
 from prototree.prune import prune
 from prototree.project import project, project_with_class_constraints
-# from prototree.upsample import upsample
+from prototree.upsample import upsample
 
 import torch
 from shutil import copy
@@ -169,7 +169,6 @@ def run_tree(args=None):
 
 def get_libraries():
     subprocess.check_call([sys.executable, "-m", "pip", "install", "opencv-python"])
-    from prototree.upsample import upsample
     subprocess.call("sudo add-apt-repository universe", shell=True)
     subprocess.call("sudo apt update", shell=True)
     subprocess.call("sudo apt install graphviz", shell=True)

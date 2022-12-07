@@ -48,8 +48,9 @@ def get_dataloaders(args: argparse.Namespace):
     projectloader = torch.utils.data.DataLoader(projectset,
                                                 #    batch_size=args.batch_size,
                                                 # make batch size smaller to prevent out of memory errors during projection
-                                                batch_size=int(
-                                                    args.batch_size/4),
+                                                # batch_size=int(
+                                                #   args.batch_size/4),
+                                                batch_size = args.batch_size,
                                                 shuffle=False,
                                                 pin_memory=cuda,
                                                 num_workers=10
