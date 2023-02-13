@@ -6,6 +6,23 @@ from util.log import Log
 from features.resnet_features import resnet18_features, resnet34_features, resnet50_features, resnet50_features_inat, resnet101_features, resnet152_features
 from features.densenet_features import densenet121_features, densenet161_features, densenet169_features, densenet201_features
 from features.vgg_features import vgg11_features, vgg11_bn_features, vgg13_features, vgg13_bn_features, vgg16_features, vgg16_bn_features,vgg19_features, vgg19_bn_features
+import os
+import torch
+from torch import nn
+from torch.utils.data import DataLoader
+from torchvision import datasets, transforms
+
+
+
+
+class DummyNeuralNetwork(nn.Module):
+    def __init__(self):
+        super(DummyNeuralNetwork, self).__init__()
+        self.flatten = nn.Flatten()
+
+    def forward(self, x):
+        # x = self.flatten(x)
+        return x
 
 base_architecture_to_features = {'resnet18': resnet18_features,
                                  'resnet34': resnet34_features,
@@ -32,7 +49,10 @@ base_architecture_to_features = {'resnet18': resnet18_features,
 """
 def get_network(num_in_channels: int, args: argparse.Namespace):
     # Define a conv net for estimating the probabilities at each decision node
-    features = base_architecture_to_features[args.net](pretrained=not args.disable_pretrained)            
+    # features is VGG model (<class 'features.vgg_features.VGG_features'>)
+    features = base_architecture_to_features[args.net](pretrained=not args.disable_pretrained)
+
+    print("xdv features:", type(features))
     features_name = str(features).upper()
     if features_name.startswith('VGG') or features_name.startswith('RES'):
         first_add_on_layer_in_channels = \
@@ -59,4 +79,9 @@ def freeze(tree: ProtoTree, epoch: int, params_to_freeze: list, params_to_train:
             log.log_message("\nNetwork unfrozen")
             for parameter in params_to_freeze:
                 parameter.requires_grad = True
+
+def get_dummy_network():
+    features = DummyNeuralNetwork()
+    add_on_layers = nn.Identity(54, unused_argument1=0.1, unused_argument2=False)
+    return features, add_on_layers            
 

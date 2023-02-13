@@ -7,7 +7,7 @@ import importlib.util
 from util.args import get_args, save_args, get_optimizer
 from util.data import get_dataloaders
 from util.init import init_tree
-from util.net import get_network, freeze
+from util.net import get_network, freeze, get_dummy_network
 from util.visualize import gen_vis
 from util.analyse import *
 from util.save import *
@@ -46,8 +46,11 @@ def run_tree(args=None):
 
     # Obtain the dataset and dataloaders
     trainloader, projectloader, testloader, classes, num_channels = get_dataloaders(args)
+
     # Create a convolutional network based on arguments and add 1x1 conv layer
-    features_net, add_on_layers = get_network(num_channels, args)
+    # features_net, add_on_layers = get_network(num_channels, args)
+    # xdv: dummy netwerk
+    features_net, add_on_layers = get_dummy_network()
     
     # Create a ProtoTree
     tree = ProtoTree(num_classes=len(classes),
@@ -177,6 +180,6 @@ def get_libraries():
 
 if __name__ == '__main__':
 
-    get_libraries()
+    # get_libraries()
     args = get_args()
     run_tree(args)
