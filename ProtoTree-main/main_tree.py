@@ -49,8 +49,7 @@ def run_tree(args=None):
 
     # Create a convolutional network based on arguments and add 1x1 conv layer
     features_net, add_on_layers = get_network(num_channels, args)
-    # xdv: dummy netwerk
-    # features_net, add_on_layers = get_dummy_network()
+
     
     # Create a ProtoTree
     tree = ProtoTree(num_classes=len(classes),

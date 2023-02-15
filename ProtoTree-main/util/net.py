@@ -48,11 +48,17 @@ base_architecture_to_features = {'resnet18': resnet18_features,
 
 """
 def get_network(num_in_channels: int, args: argparse.Namespace):
+
+    if args.net == "dummy":
+        features = DummyNeuralNetwork()
+        add_on_layers = nn.Identity(54, unused_argument1=0.1, unused_argument2=False)
+        return features, add_on_layers
+    
     # Define a conv net for estimating the probabilities at each decision node
     # features is VGG model (<class 'features.vgg_features.VGG_features'>)
     features = base_architecture_to_features[args.net](pretrained=not args.disable_pretrained)
 
-    print("xdv features:", type(features))
+    
     features_name = str(features).upper()
     if features_name.startswith('VGG') or features_name.startswith('RES'):
         first_add_on_layer_in_channels = \
@@ -80,8 +86,5 @@ def freeze(tree: ProtoTree, epoch: int, params_to_freeze: list, params_to_train:
             for parameter in params_to_freeze:
                 parameter.requires_grad = True
 
-def get_dummy_network():
-    features = DummyNeuralNetwork()
-    add_on_layers = nn.Identity(54, unused_argument1=0.1, unused_argument2=False)
-    return features, add_on_layers            
+          
 
