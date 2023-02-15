@@ -117,6 +117,7 @@ class ProtoTree(nn.Module):
         features = self._net(xs)
         features = self._add_on(features)
         bs, D, W, H = features.shape
+        
 
         '''
             COMPUTE THE PROTOTYPE SIMILARITIES GIVEN THE COMPUTED FEATURES
@@ -124,10 +125,10 @@ class ProtoTree(nn.Module):
 
         # Use the features to compute the distances from the prototypes
         distances = self.prototype_layer(features)  # Shape: (batch_size, num_prototypes, W, H)
-
+        
         # Perform global min pooling to see the minimal distance for each prototype to any patch of the input image
-        print("xdv kernel grootte aangepast van 369 naar 360")
-        min_distances = min_pool2d(distances, kernel_size=(360, 360))
+        print("xdv kernel grootte aangepast van 369 (originele input) naar input na L2Conv2D (360)\n")
+        min_distances = min_pool2d(distances, kernel_size=(distances.shape[2], distances.shape[3]))
         min_distances = min_distances.view(bs, self.num_prototypes)
 
         if not self._log_probabilities:

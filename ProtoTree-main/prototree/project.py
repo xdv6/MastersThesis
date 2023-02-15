@@ -184,8 +184,9 @@ def project_with_class_constraints(tree: ProtoTree,
                         min_distance = distances.min()
                         min_distance_ix = distances.argmin()
                         # Use the index to get the closest latent patch
-                        print("xdv H en W aangepast", H," ", W)
-                        closest_patch = patches.view(D, W * H, W1, H1)[:, min_distance_ix, :, :]
+                        print("xdv W en H aangepast naar distances.shape[0] en distances.shape[1]", distances.shape[0], distances.shape[1])
+                        print("xdv numpy view functie aangepast naar reshape")
+                        closest_patch = patches.reshape(D, distances.shape[0] * distances.shape[1], W1, H1)[:, min_distance_ix, :, :]
 
                         # Check if the latent patch is closest for all data samples seen so far
                         if min_distance < global_min_proto_dist[j]:
