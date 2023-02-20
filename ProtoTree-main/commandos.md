@@ -12,13 +12,19 @@
 
 ```python main_explain_local.py --log_dir ./runs/protoree_cub --dataset CUB-200-2011 --sample_dir ./data/CUB_200_2011/dataset/test_full/017.Cardinal/Cardinal_0001_17057.jpg  --prototree ./runs/protoree_cub/checkpoints/pruned_and_projected```
 
-### ProtoTree trainen frozen_lake 
+### ProtoTree trainen frozen_lake (dummy)
 
-```python main_tree.py --epochs 100 --log_dir ./runs/test_frozen_dummy_W1_100 --dataset frozen_lake --lr 0.001 --lr_block 0.001 --lr_net 1e-5 --num_features 3 --depth 4 --net vgg11 --freeze_epochs 30 --milestones 60,70,80,90,100 --W1 100 --H1 100 ```
+```python3 main_tree.py --epochs 20 --log_dir ./runs/test_dummy_grotere_prototypes --dataset frozen_lake --lr 0.001 --lr_block 0.001 --lr_net 1e-5 --num_features 3 --depth 4 --net dummy --milestones 60,70,80,90,100  --disable_pretrained  --H1 10 --W1 10 ```
 
 ### reeds getrainde ProtoTree evalueren frozen_lake 
 
 ``` python main_tree.py --epochs 1 --log_dir ./runs/test_frozen_dummy_W1_100 --dataset frozen_lake --lr 0.001 --lr_block 0.001 --lr_net 1e-5 --num_features 3 --depth 4 --net vgg11 --freeze_epochs 30 --milestones 60,70,80,90,100 --W1 100 --H1 100 --state_dict_dir_tree ./runs/test_test_frozen_dummy_W1_100/checkpoints/pruned_and_projected```
+
+
+
+### ProtoTree trainen frozen_lake (vgg) freezen van net weights
+
+```python3 main_tree.py --epochs 100 --log_dir ./runs/vgg11_hogere_lrs --dataset frozen_lake --lr 0.01 --lr_block 0.01 --lr_net 1e-2 --num_features 3 --depth 4 --net vgg11 --milestones 60,70,80,90,100 --freeze_epochs 100 --pruning_threshold_leaves 0.51 ```
 
 
 
@@ -28,7 +34,14 @@
 
 ```text
 opmerkingen:
+
 gebruikt geen default num_features want dan krijg je alleen witte kotjes als prototypes
+
+freezen van netwerk weights over alle epochs geeft veel betere resultaten
+
+lr en lr block 0.01 zetten
+
+vgg19 is overkill
 ```
 
 
@@ -59,5 +72,5 @@ sudo apt install graphviz
 
 ### dot file effectief omzetten
 
-```dot -Tpdf -Gmargin=0 ./runs/test_frozen/pruned_and_projected/treevis.dot -o ./runs/test_frozen/pruned_and_projected/treevis.pdf```
+```dot -Tpdf -Gmargin=0 ./runs/test_vgg_200_epochs/pruned_and_projected/treevis.dot -o ./runs/test_vgg_200_epochs/pruned_and_projected/treevis.pdf```
 

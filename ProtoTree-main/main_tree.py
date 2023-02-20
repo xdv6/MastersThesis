@@ -7,7 +7,7 @@ import importlib.util
 from util.args import get_args, save_args, get_optimizer
 from util.data import get_dataloaders
 from util.init import init_tree
-from util.net import get_network, freeze, get_dummy_network
+from util.net import get_network, freeze
 from util.visualize import gen_vis
 from util.analyse import *
 from util.save import *

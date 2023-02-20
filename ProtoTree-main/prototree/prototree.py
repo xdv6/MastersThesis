@@ -126,9 +126,15 @@ class ProtoTree(nn.Module):
         # Use the features to compute the distances from the prototypes
         distances = self.prototype_layer(features)  # Shape: (batch_size, num_prototypes, W, H)
         
+        # TODO: kernelgrootte aanpassen zodat resulterende output correcte shape heeft na convolutie
         # Perform global min pooling to see the minimal distance for each prototype to any patch of the input image
         print("xdv kernel grootte aangepast van",W, "(originele input) naar input na L2Conv2D (",distances.shape[2], ")\n")
-        min_distances = min_pool2d(distances, kernel_size=(distances.shape[2], distances.shape[3]))
+
+        # min_distances = min_pool2d(distances, kernel_size=(33, 33))
+        min_distances = min_pool2d(distances, kernel_size=(distances.shape[2], distances.shape[2]))
+
+
+        print("xdv: shape na min_pool2d", min_distances.shape)
         min_distances = min_distances.view(bs, self.num_prototypes)
 
         if not self._log_probabilities:
@@ -140,6 +146,9 @@ class ProtoTree(nn.Module):
         # Add the conv net output to the kwargs dict to be passed to the decision nodes in the tree
         # Split (or chunk) the conv net output tensor of shape (batch_size, num_decision_nodes) into individual tensors
         # of shape (batch_size, 1) containing the logits that are relevant to single decision nodes
+
+        # chunk is nu (batch_size, 10)
+        
         kwargs['conv_net_output'] = similarities.chunk(similarities.size(1), dim=1)
         # Add the mapping of decision nodes to conv net outputs to the kwargs dict to be passed to the decision nodes in
         # the tree

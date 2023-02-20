@@ -56,10 +56,14 @@ class Branch(Node):
             # node_attr[self, 'alpha'] = torch.sum(pa * ps) / torch.sum(pa)
 
             # Obtain the unweighted probability distributions from the child nodes
-            l_dists, _ = self.l.forward(xs, **kwargs)  # shape: (bs, k)
+            l_dists, _ = self.l.forward(xs, **kwargs)  # shape: (bs, k) (k is aantal klassen, 2 in het geval van frozen lake)
             r_dists, _ = self.r.forward(xs, **kwargs)  # shape: (bs, k)
-            # Weight the probability distributions by the decision node's output
+            
+            # ps = ps.view(batch_size, 100)
             ps = ps.view(batch_size, 1)
+
+            # Weight the probability distributions by the decision node's output
+            # import ipdb; ipdb.set_trace()
             return (1 - ps) * l_dists + ps * r_dists, node_attr  # shape: (bs, k)
         else:
             # Store decision node probabilities as node attribute
@@ -84,6 +88,8 @@ class Branch(Node):
             logs_stacked = torch.stack((oneminusp + l_dists, ps + r_dists))
             return torch.logsumexp(logs_stacked, dim=0), node_attr  # shape: (bs,)
 
+
+    # output na NN en nearest patch
     def g(self, xs: torch.Tensor, **kwargs):
         out_map = kwargs['out_map']  # Obtain the mapping from decision nodes to conv net outputs
         conv_net_output = kwargs['conv_net_output']  # Obtain the conv net outputs
