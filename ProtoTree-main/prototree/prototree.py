@@ -126,15 +126,11 @@ class ProtoTree(nn.Module):
         # Use the features to compute the distances from the prototypes
         distances = self.prototype_layer(features)  # Shape: (batch_size, num_prototypes, W, H)
         
-        # TODO: kernelgrootte aanpassen zodat resulterende output correcte shape heeft na convolutie
         # Perform global min pooling to see the minimal distance for each prototype to any patch of the input image
-        print("xdv kernel grootte aangepast van",W, "(originele input) naar input na L2Conv2D (",distances.shape[2], ")\n")
 
-        # min_distances = min_pool2d(distances, kernel_size=(33, 33))
-        min_distances = min_pool2d(distances, kernel_size=(distances.shape[2], distances.shape[2]))
+        min_distances = min_pool2d(distances, kernel_size=(H, W))
 
 
-        print("xdv: shape na min_pool2d", min_distances.shape)
         min_distances = min_distances.view(bs, self.num_prototypes)
 
         if not self._log_probabilities:
