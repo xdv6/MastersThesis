@@ -14,7 +14,7 @@
 
 ### ProtoTree trainen frozen_lake (dummy)
 
-```python3 main_tree.py --epochs 20 --log_dir ./runs/test_dummy_grotere_prototypes --dataset frozen_lake --lr 0.001 --lr_block 0.001 --lr_net 1e-5 --num_features 3 --depth 4 --net dummy --milestones 60,70,80,90,100  --disable_pretrained  --H1 20 --W1  ```
+```python3 main_tree.py --epochs 20 --log_dir ./runs/test_dummy_grotere_prototypes --dataset frozen_lake --lr 0.001 --lr_block 0.001 --lr_net 1e-5 --num_features 3 --depth 4 --net dummy --milestones 60,70,80,90,100      ```
 
 ### reeds getrainde ProtoTree evalueren frozen_lake 
 
@@ -24,7 +24,7 @@
 
 ### ProtoTree trainen frozen_lake (vgg) freezen van net weights
 
-```python3 main_tree.py --epochs 2 --log_dir ./runs/test_zonder_prints --dataset frozen_lake --lr 0.01 --lr_block 0.01 --lr_net 1e-2 --num_features 3 --depth 4 --net vgg11 --milestones 60,70,80,90,100 --freeze_epochs 100 --pruning_threshold_leaves 0.51 ```
+```python3 main_tree.py --epochs 100 --log_dir ./runs/test_rescaled_210_dataset --dataset frozen_lake --lr 0.01 --lr_block 0.01 --lr_net 1e-2 --num_features 3 --depth 8 --net vgg11 --milestones 60,70,80,90,100 --freeze_epochs 100 --pruning_threshold_leaves 0.55 ```
 
 
 
@@ -35,13 +35,17 @@
 ```text
 opmerkingen:
 
-gebruikt geen default num_features want dan krijg je alleen witte kotjes als prototypes
+* neem num_features 3 om vierkante kotjes te krijgen
 
-freezen van netwerk weights over alle epochs geeft veel betere resultaten
+* gebruikt geen default num_features want dan krijg je alleen witte kotjes als prototypes
 
-lr en lr block 0.01 zetten
+* freezen van netwerk weights over alle epochs geeft veel betere resultaten
 
-vgg19 is overkill
+* lr en lr block 0.01 zetten
+
+* vgg19 en andere CNNs leveren geen betere resultaten, hou het bij vgg11
+
+* --milestones probeer eens andere --milestones
 ```
 
 
