@@ -72,23 +72,26 @@ class GridWorldEnv(gym.Env):
         # super().reset(seed=seed)
 
         # Choose the agent's location uniformly at random
-        self._agent_location = self.np_random.integers(
-            0, self.size, size=2, dtype=int)
-        print(f"agent location: {self._agent_location}")
+        # self._agent_location = self.np_random.integers(
+        #     0, self.size, size=2, dtype=int)
 
         # We will sample the target's location randomly until it does not coincide with the agent's location
-        self._target_location = self._agent_location
-        while np.array_equal(self._target_location, self._agent_location):
-            self._target_location = self.np_random.integers(
-                0, self.size, size=2, dtype=int
-            )
-        print(f"target location: {self._target_location}")
+        # self._target_location = self._agent_location
+        # while np.array_equal(self._target_location, self._agent_location):
+        #     self._target_location = self.np_random.integers(
+        #         0, self.size, size=2, dtype=int
+        #     )
 
         # startpunt van agent
-        # self._agent_location = np.array([550, 600], dtype=np.int32)
+        self._agent_location = np.array([5, 23], dtype=np.int32)
 
         # targetlocatie
-        # self._target_location = np.array([750,600], dtype=np.int32)
+        self._target_location = np.array([8,9], dtype=np.int32)
+
+        print(f"agent location: {self._agent_location}")
+        print(f"target location: {self._target_location}")
+
+
 
         observation = self._get_obs()
         info = self._get_info()
@@ -140,18 +143,20 @@ class GridWorldEnv(gym.Env):
         pygame.draw.rect(
             canvas,
             (255, 0, 0),
+            # Rect(top_left_corner_postion, (width, height))
             pygame.Rect(
                 pix_square_size * self._target_location,
                 (pix_square_size, pix_square_size),
             ),
         )
+        
         # Now we draw the agent
         pygame.draw.rect(
             canvas,
             (0, 0, 255),
             pygame.Rect(
-                self._agent_location * pix_square_size,
-                (pix_square_size, pix_square_size/2),
+                pix_square_size * self._agent_location,
+                (pix_square_size, pix_square_size),
             ),
 
         )
