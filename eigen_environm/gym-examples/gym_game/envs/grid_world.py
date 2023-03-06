@@ -24,12 +24,10 @@ class GridWorldEnv(gym.Env):
         # )
         self.observation_space = spaces.Dict(
             {
-                "agent": spaces.Box(low = np.array([0, 0]), high = np.array([self.screen_width-1, self.screen_height-1]), shape=(2,), dtype=int),
-                "target": spaces.Box(low = np.array([0, 0]), high = np.array([self.screen_width-1, self.screen_height-1]), shape=(2,), dtype=int),
+                "agent": spaces.Box(low=np.array([0, 0]), high=np.array([self.screen_width-1, self.screen_height-1]), shape=(2,), dtype=int),
+                "target": spaces.Box(low=np.array([0, 0]), high=np.array([self.screen_width-1, self.screen_height-1]), shape=(2,), dtype=int),
             }
         )
-
-        
 
         # We have 4 actions, corresponding to "right", "up", "left", "down", "right"
         self.action_space = spaces.Discrete(4)
@@ -160,21 +158,27 @@ class GridWorldEnv(gym.Env):
 
         # Finally, add some gridlines
 
-        # for x in range(self.size + 1):
-        #     pygame.draw.line(
-        #         canvas,
-        #         0,
-        #         (0, pix_square_size * x),
-        #         (self.window_size, pix_square_size * x),
-        #         width=3,
-        #     )
-        #     pygame.draw.line(
-        #         canvas,
-        #         0,
-        #         (pix_square_size * x, 0),
-        #         (pix_square_size * x, self.window_size),
-        #         width=3,
-        #     )
+        # horizontale lijnen
+        for x in range(self.screen_height + 1):
+            # line(surface, color, start_pos, end_pos) -> Rect
+            pygame.draw.line(
+                canvas,
+                0,
+                (0, pix_square_size * x),
+                (self.screen_width, pix_square_size * x),
+                width=3,
+            )
+
+        # vertikale lijnen
+        for x in range(self.screen_width + 1):
+
+            pygame.draw.line(
+                canvas,
+                0,
+                (pix_square_size * x, 0),
+                (pix_square_size * x, self.screen_height),
+                width=3,
+            )
 
         if self.render_mode == "human":
             # The following line copies our drawings from `canvas` to the visible window
