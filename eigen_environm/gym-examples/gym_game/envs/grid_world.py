@@ -8,7 +8,7 @@ class GridWorldEnv(gym.Env):
     metadata = {"render_modes": ["human", "rgb_array"], "render_fps": 4}
 
     def __init__(self, render_mode=None, size=30):
-        self.size = size  # The size of the square grid
+        # self.size = size  # The size of the square grid
         self.window_size = 512  # The size of the PyGame window
         self.screen_width = 1500
         self.screen_height = 800
@@ -83,10 +83,10 @@ class GridWorldEnv(gym.Env):
         #     )
 
         # startpunt van agent
-        self._agent_location = np.array([5, 23], dtype=np.int32)
+        self._agent_location = np.array([0, 0], dtype=np.int32)
 
         # targetlocatie
-        self._target_location = np.array([8,9], dtype=np.int32)
+        self._target_location = np.array([50,50], dtype=np.int32)
 
         print(f"agent location: {self._agent_location}")
         print(f"target location: {self._target_location}")
@@ -105,10 +105,12 @@ class GridWorldEnv(gym.Env):
         # Map the action (element of {0,1,2,3}) to the direction we walk in
         direction = self._action_to_direction[action]
         # We use `np.clip` to make sure we don't leave the grid
-        self._agent_location = np.clip(
-            self._agent_location + direction, 0, self.size - 1
-        )
-        # An episode is done iff the agent has reached the target
+        # self._agent_location = np.clip(
+        #     self._agent_location + direction, 0, self.size - 1
+        # )
+
+        self._agent_location = self._agent_location + direction
+        # An episode is done if the agent has reached the target
         terminated = np.array_equal(
             self._agent_location, self._target_location)
         reward = 1 if terminated else 0  # Binary sparse rewards
@@ -133,11 +135,12 @@ class GridWorldEnv(gym.Env):
         if self.clock is None and self.render_mode == "human":
             self.clock = pygame.time.Clock()
 
-        canvas = self.map
+        canvas = pygame.image.load("./map_v2.png")
         # canvas.fill((255, 255, 255))
-        pix_square_size = (
-            self.window_size / self.size
-        )  # The size of a single grid square in pixels
+        
+
+        # The size of a single grid square in pixels
+        pix_square_size = 10
 
         # First we draw the target
         pygame.draw.rect(
@@ -149,7 +152,7 @@ class GridWorldEnv(gym.Env):
                 (pix_square_size, pix_square_size),
             ),
         )
-        
+
         # Now we draw the agent
         pygame.draw.rect(
             canvas,
