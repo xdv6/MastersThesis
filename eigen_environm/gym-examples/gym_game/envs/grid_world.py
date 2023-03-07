@@ -76,7 +76,7 @@ class GridWorldEnv(gym.Env):
     def reset(self, seed=None, options=None):
 
         # startpunt van agent
-        self._agent_location = np.array([0, 0], dtype=np.int32)
+        self._agent_location = np.array([48, 48], dtype=np.int32)
 
         # targetlocatie
         self._target_location = np.array([50, 50], dtype=np.int32)
@@ -96,8 +96,9 @@ class GridWorldEnv(gym.Env):
         self.is_dead = False
         for p in self.four_points:
             # kijken of punt wit is
-            if self.map.get_at((int(p[0]), int(p[1]))) == (255, 255, 255, 255):
-                print("DEAD")
+            if self.map.get_at((int(p[0]*self.pix_square_size), int(p[1]*self.pix_square_size))) == (255, 255, 255):
+                print(self.map.get_at((int(p[0]*self.pix_square_size), int(p[1]*self.pix_square_size))))
+                print(f"punt: {p[0]},{p[1]} => DEAD")
                 self.is_dead = True
                 break
 
