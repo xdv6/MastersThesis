@@ -12,16 +12,22 @@ class GridWorldEnv(gym.Env):
         self.window_size = 512  # The size of the PyGame window
         self.screen_width = 1500
         self.screen_height = 800
+
+        # The size of a single grid square in pixels
+        self.pix_square_size = 10
+
+        # background image with tracks
         self.map = pygame.image.load("./map_v2.png")
+
+        # list with the four corner points of the agent
+        self.four_points = []
+
+        # bool dat weergeeft of agent nog niet gecrashed is
+        self.is_dead = False
 
         # Observations are dictionaries with the agent's and the target's location.
         # Each location is encoded as an element of {0, ..., `size`}^2, i.e. MultiDiscrete([size, size]).
-        # self.observation_space = spaces.Dict(
-        #     {
-        #         "agent": spaces.Box(0, size - 1, shape=(2,), dtype=int),
-        #         "target": spaces.Box(0, size - 1, shape=(2,), dtype=int),
-        #     }
-        # )
+
         self.observation_space = spaces.Dict(
             {
                 "agent": spaces.Box(low=np.array([0, 0]), high=np.array([self.screen_width-1, self.screen_height-1]), shape=(2,), dtype=int),
@@ -68,30 +74,15 @@ class GridWorldEnv(gym.Env):
         }
 
     def reset(self, seed=None, options=None):
-        # We need the following line to seed self.np_random
-        # super().reset(seed=seed)
-
-        # Choose the agent's location uniformly at random
-        # self._agent_location = self.np_random.integers(
-        #     0, self.size, size=2, dtype=int)
-
-        # We will sample the target's location randomly until it does not coincide with the agent's location
-        # self._target_location = self._agent_location
-        # while np.array_equal(self._target_location, self._agent_location):
-        #     self._target_location = self.np_random.integers(
-        #         0, self.size, size=2, dtype=int
-        #     )
 
         # startpunt van agent
         self._agent_location = np.array([0, 0], dtype=np.int32)
 
         # targetlocatie
-        self._target_location = np.array([50,50], dtype=np.int32)
+        self._target_location = np.array([50, 50], dtype=np.int32)
 
         print(f"agent location: {self._agent_location}")
         print(f"target location: {self._target_location}")
-
-
 
         observation = self._get_obs()
         info = self._get_info()
@@ -101,21 +92,48 @@ class GridWorldEnv(gym.Env):
 
         return observation, info
 
+    def check_collision(self):
+        self.is_dead = False
+        for p in self.four_points:
+            # kijken of punt wit is
+            if self.map.get_at((int(p[0]), int(p[1]))) == (255, 255, 255, 255):
+                print("DEAD")
+                self.is_dead = True
+                break
+
     def step(self, action):
         # Map the action (element of {0,1,2,3}) to the direction we walk in
         direction = self._action_to_direction[action]
-        # We use `np.clip` to make sure we don't leave the grid
-        # self._agent_location = np.clip(
-        #     self._agent_location + direction, 0, self.size - 1
-        # )
 
+        # change position of agent (position is top left corner)
         self._agent_location = self._agent_location + direction
-        # An episode is done if the agent has reached the target
-        terminated = np.array_equal(
-            self._agent_location, self._target_location)
-        reward = 1 if terminated else 0  # Binary sparse rewards
+
+        # caculate 4 collision points
+        left_top = self._agent_location
+        right_top = self._agent_location + np.array([1, 0])
+        left_bottom = self._agent_location + np.array([0, 1])
+        right_bottom = self._agent_location + np.array([1, 1])
+        # print(f"left_top: {left_top}, right_top: {right_top}, left_bottom: {left_bottom}, right_bottom: {right_bottom}")
+
+        self.four_points = [left_top, right_top, left_bottom, right_bottom]
+        
+        # check if agent collided with the border
+        self.check_collision()
+
         observation = self._get_obs()
         info = self._get_info()
+
+        # An episode is done if the agent has collided with the border 
+        if self.is_dead:
+            reward = 0
+            terminated = True
+            return observation, reward, terminated, False, info
+        
+        # or reached the target
+        terminated = np.array_equal( self._agent_location, self._target_location)
+
+        reward = 1 if terminated else 0  # Binary sparse rewards
+
 
         if self.render_mode == "human":
             self._render_frame()
@@ -136,20 +154,16 @@ class GridWorldEnv(gym.Env):
             self.clock = pygame.time.Clock()
 
         canvas = pygame.image.load("./map_v2.png")
-        # canvas.fill((255, 255, 255))
         
-
-        # The size of a single grid square in pixels
-        pix_square_size = 10
 
         # First we draw the target
         pygame.draw.rect(
             canvas,
             (255, 0, 0),
-            # Rect(top_left_corner_postion, (width, height))
+            # syntax: Rect(top_left_corner_postion, (width, height))
             pygame.Rect(
-                pix_square_size * self._target_location,
-                (pix_square_size, pix_square_size),
+                self.pix_square_size * self._target_location,
+                (self.pix_square_size, self.pix_square_size),
             ),
         )
 
@@ -158,8 +172,8 @@ class GridWorldEnv(gym.Env):
             canvas,
             (0, 0, 255),
             pygame.Rect(
-                pix_square_size * self._agent_location,
-                (pix_square_size, pix_square_size),
+                self.pix_square_size * self._agent_location,
+                (self.pix_square_size, self.pix_square_size),
             ),
 
         )
@@ -168,12 +182,12 @@ class GridWorldEnv(gym.Env):
 
         # horizontale lijnen
         for x in range(self.screen_height + 1):
-            # line(surface, color, start_pos, end_pos) -> Rect
+            # syntax line(surface, color, start_pos, end_pos) -> Rect
             pygame.draw.line(
                 canvas,
                 0,
-                (0, pix_square_size * x),
-                (self.screen_width, pix_square_size * x),
+                (0, self.pix_square_size * x),
+                (self.screen_width, self.pix_square_size * x),
                 width=3,
             )
 
@@ -183,8 +197,8 @@ class GridWorldEnv(gym.Env):
             pygame.draw.line(
                 canvas,
                 0,
-                (pix_square_size * x, 0),
-                (pix_square_size * x, self.screen_height),
+                (self.pix_square_size * x, 0),
+                (self.pix_square_size * x, self.screen_height),
                 width=3,
             )
 
