@@ -8,8 +8,7 @@ class GridWorldEnv(gym.Env):
     metadata = {"render_modes": ["human", "rgb_array"], "render_fps": 4}
 
     def __init__(self, render_mode=None, size=30):
-        # self.size = size  # The size of the square grid
-        self.window_size = 512  # The size of the PyGame window
+
         self.screen_width = 1500
         self.screen_height = 800
 
@@ -97,7 +96,6 @@ class GridWorldEnv(gym.Env):
         for p in self.four_points:
             # kijken of punt wit is
             if self.map.get_at((int(p[0]*self.pix_square_size), int(p[1]*self.pix_square_size))) == (255, 255, 255):
-                print(self.map.get_at((int(p[0]*self.pix_square_size), int(p[1]*self.pix_square_size))))
                 print(f"punt: {p[0]},{p[1]} => DEAD")
                 self.is_dead = True
                 break
