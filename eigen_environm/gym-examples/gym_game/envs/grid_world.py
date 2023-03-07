@@ -74,11 +74,17 @@ class GridWorldEnv(gym.Env):
 
     def reset(self, seed=None, options=None):
 
-        # startpunt van agent
-        self._agent_location = np.array([48, 48], dtype=np.int32)
+        # startpunt van agent (vastgezet op bepaalde pixels), positie afhankelijk van gridcelgrootte
+        coo_agent_x = int(720/ self.pix_square_size)
+        coo_agent_y = int(690/self.pix_square_size)
+
+        self._agent_location = np.array([coo_agent_x, coo_agent_y], dtype=np.int32)
 
         # targetlocatie
-        self._target_location = np.array([50, 50], dtype=np.int32)
+        coo_target_x = int(570/ self.pix_square_size)
+        coo_target_y = int(690/self.pix_square_size)
+
+        self._target_location = np.array([coo_target_x, coo_target_y], dtype=np.int32)
 
         print(f"agent location: {self._agent_location}")
         print(f"target location: {self._target_location}")

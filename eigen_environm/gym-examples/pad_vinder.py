@@ -2,8 +2,13 @@ import gym
 import gym_game
 import pygame
 import matplotlib.pyplot as plt
+"""
+I show example of gameplay in pygame window
+"""
 
 env = gym.make("GridWorld-v0", render_mode="human")
+
+
 env.reset()
 screen = env.render()
 
@@ -17,4 +22,16 @@ while not done:
 env.close()
 
 
+"""
+II show example to screen
+"""
 
+# env = gym.make("GridWorld-v0", render_mode="rgb_array")
+
+# env.reset()
+# screen = env.render()
+
+# plt.figure()
+# plt.axis('off')
+# plt.imshow(screen)
+# plt.show()
