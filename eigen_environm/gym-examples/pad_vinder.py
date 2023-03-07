@@ -3,7 +3,7 @@ import gym_game
 import pygame
 import matplotlib.pyplot as plt
 """
-I show example of gameplay in pygame window
+I: show example of gameplay in pygame window
 """
 
 env = gym.make("GridWorld-v0", render_mode="human")
@@ -23,7 +23,7 @@ env.close()
 
 
 """
-II show example to screen
+II: show example to screen
 """
 
 # env = gym.make("GridWorld-v0", render_mode="rgb_array")

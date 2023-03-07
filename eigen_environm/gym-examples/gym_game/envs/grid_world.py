@@ -7,13 +7,13 @@ import numpy as np
 class GridWorldEnv(gym.Env):
     metadata = {"render_modes": ["human", "rgb_array"], "render_fps": 4}
 
-    def __init__(self, render_mode=None, size=30):
+    def __init__(self, render_mode=None, size=20):
 
         self.screen_width = 1500
         self.screen_height = 800
 
         # The size of a single grid square in pixels
-        self.pix_square_size = 10
+        self.pix_square_size = size
 
         # background image with tracks
         self.map = pygame.image.load("./map_v2.png")
@@ -196,7 +196,7 @@ class GridWorldEnv(gym.Env):
                 width=3,
             )
 
-        # vertikale lijnen
+        # verticale lijnen
         for x in range(self.screen_width + 1):
 
             pygame.draw.line(
