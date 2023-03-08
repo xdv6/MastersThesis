@@ -9,8 +9,8 @@ class GridWorldEnv(gym.Env):
 
     def __init__(self, render_mode=None, size=30):
 
-        self.screen_width = 300
-        self.screen_height = 1070
+        self.screen_width = 401
+        self.screen_height = 1172
 
         # The size of a single grid square in pixels
         self.pix_square_size = size
@@ -77,14 +77,14 @@ class GridWorldEnv(gym.Env):
     def reset(self, seed=None, options=None):
 
         # startpunt van agent (vastgezet op bepaalde pixels), positie afhankelijk van gridcelgrootte
-        coo_agent_x = int(82/ self.pix_square_size)
-        coo_agent_y = int(963/self.pix_square_size)
+        coo_agent_x = int(90/ self.pix_square_size)
+        coo_agent_y = int(990/self.pix_square_size)
 
         self._agent_location = np.array([coo_agent_x, coo_agent_y], dtype=np.int32)
 
         # targetlocatie
-        coo_target_x = int(180/ self.pix_square_size)
-        coo_target_y = int(97/self.pix_square_size)
+        coo_target_x = int(240/ self.pix_square_size)
+        coo_target_y = int(120/self.pix_square_size)
 
         self._target_location = np.array([coo_target_x, coo_target_y], dtype=np.int32)
 
@@ -193,29 +193,29 @@ class GridWorldEnv(gym.Env):
 
         )
 
-        # Finally, add some gridlines
+        # Finally, add some gridlines (gridlines om actiespace te visualiseren)
 
         # horizontale lijnen
-        for x in range(self.screen_height + 1):
-            # syntax line(surface, color, start_pos, end_pos) -> Rect
-            pygame.draw.line(
-                canvas,
-                0,
-                (0, self.pix_square_size * x),
-                (self.screen_width, self.pix_square_size * x),
-                width=3,
-            )
+        # for x in range(self.screen_height + 1):
+        #     # syntax line(surface, color, start_pos, end_pos) -> Rect
+        #     pygame.draw.line(
+        #         canvas,
+        #         0,
+        #         (0, self.pix_square_size * x),
+        #         (self.screen_width, self.pix_square_size * x),
+        #         width=3,
+        #     )
 
-        # verticale lijnen
-        for x in range(self.screen_width + 1):
+        # # verticale lijnen
+        # for x in range(self.screen_width + 1):
 
-            pygame.draw.line(
-                canvas,
-                0,
-                (self.pix_square_size * x, 0),
-                (self.pix_square_size * x, self.screen_height),
-                width=3,
-            )
+        #     pygame.draw.line(
+        #         canvas,
+        #         0,
+        #         (self.pix_square_size * x, 0),
+        #         (self.pix_square_size * x, self.screen_height),
+        #         width=3,
+        #     )
 
         if self.render_mode == "human":
             # The following line copies our drawings from `canvas` to the visible window

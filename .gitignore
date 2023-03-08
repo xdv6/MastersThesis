@@ -1,5 +1,11 @@
 wandb
+
 ProtoTree-main/data
 ProtoTree-main/features/state_dicts
 ProtoTree-main/runs
 ProtoTree-main/pretrained_models
+
+notebooks_mario/MadMario/checkpoints
+notebooks_mario/MadMario/__pycache__
+
+eigen_environm/gym-examples/gym_game/__pycache__
