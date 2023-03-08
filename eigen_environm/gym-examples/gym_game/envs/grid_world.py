@@ -104,7 +104,7 @@ class GridWorldEnv(gym.Env):
         for p in self.four_points:
             # kijken of punt wit is
             if self.map.get_at((int(p[0]*self.pix_square_size), int(p[1]*self.pix_square_size))) == (255, 255, 255):
-                print(f"punt: {p[0]},{p[1]} => DEAD")
+                # print(f"punt: {p[0]},{p[1]} => DEAD")
                 self.is_dead = True
                 break
 
@@ -132,9 +132,17 @@ class GridWorldEnv(gym.Env):
 
         # An episode is done if the agent has collided with the border 
         if self.is_dead:
-            reward = 0
-            terminated = True
-            return observation, reward, terminated, False, info
+            
+            # mogelijkheid 1: stoppen aan bordern
+            # direction terug aftrekken want mag niet af pad gaan
+            self._agent_location = self._agent_location - direction
+            self.is_dead = False
+
+
+            # mogelijkheid 2: crashen
+            # reward = 0
+            # terminated = True
+            # return observation, reward, terminated, False, info
         
         # or reached the target
         terminated = np.array_equal( self._agent_location, self._target_location)
