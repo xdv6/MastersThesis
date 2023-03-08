@@ -7,16 +7,16 @@ import numpy as np
 class GridWorldEnv(gym.Env):
     metadata = {"render_modes": ["human", "rgb_array"], "render_fps": 4}
 
-    def __init__(self, render_mode=None, size=20):
+    def __init__(self, render_mode=None, size=30):
 
-        self.screen_width = 1500
-        self.screen_height = 800
+        self.screen_width = 300
+        self.screen_height = 1070
 
         # The size of a single grid square in pixels
         self.pix_square_size = size
 
         # background image with tracks
-        self.map = pygame.image.load("./map_v2.png")
+        self.map = pygame.image.load("./afbeeldingen/straat_padded.png")
 
         # list with the four corner points of the agent
         self.four_points = []
@@ -47,6 +47,8 @@ class GridWorldEnv(gym.Env):
             1: np.array([0, 1]),
             2: np.array([-1, 0]),
             3: np.array([0, -1]),
+            # tijdelijke noop
+            # 4: np.array([0,0])
         }
 
         assert render_mode is None or render_mode in self.metadata["render_modes"]
@@ -75,14 +77,14 @@ class GridWorldEnv(gym.Env):
     def reset(self, seed=None, options=None):
 
         # startpunt van agent (vastgezet op bepaalde pixels), positie afhankelijk van gridcelgrootte
-        coo_agent_x = int(720/ self.pix_square_size)
-        coo_agent_y = int(690/self.pix_square_size)
+        coo_agent_x = int(82/ self.pix_square_size)
+        coo_agent_y = int(963/self.pix_square_size)
 
         self._agent_location = np.array([coo_agent_x, coo_agent_y], dtype=np.int32)
 
         # targetlocatie
-        coo_target_x = int(570/ self.pix_square_size)
-        coo_target_y = int(690/self.pix_square_size)
+        coo_target_x = int(180/ self.pix_square_size)
+        coo_target_y = int(97/self.pix_square_size)
 
         self._target_location = np.array([coo_target_x, coo_target_y], dtype=np.int32)
 
@@ -158,7 +160,7 @@ class GridWorldEnv(gym.Env):
         if self.clock is None and self.render_mode == "human":
             self.clock = pygame.time.Clock()
 
-        canvas = pygame.image.load("./map_v2.png")
+        canvas = pygame.image.load("./afbeeldingen/straat_padded.png")
         
 
         # First we draw the target
