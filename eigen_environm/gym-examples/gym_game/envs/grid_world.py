@@ -88,8 +88,8 @@ class GridWorldEnv(gym.Env):
 
         self._target_location = np.array([coo_target_x, coo_target_y], dtype=np.int32)
 
-        print(f"agent location: {self._agent_location}")
-        print(f"target location: {self._target_location}")
+        # print(f"agent location: {self._agent_location}")
+        # print(f"target location: {self._target_location}")
 
         observation = self._get_obs()
         info = self._get_info()
