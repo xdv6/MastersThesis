@@ -139,10 +139,10 @@ class GridWorldEnv(gym.Env):
             self.is_dead = False
 
 
-            # mogelijkheid 2: crashen
-            reward = -10
+            # mogelijkheid 2: punishen of crashen
+            # reward = -1
             # terminated = True
-            return observation, reward, False, False, info
+            # return observation, reward, False, False, info
         
         # or reached the target
         terminated = np.array_equal( self._agent_location, self._target_location)
