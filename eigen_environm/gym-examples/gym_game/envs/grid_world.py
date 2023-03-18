@@ -210,26 +210,26 @@ class GridWorldEnv(gym.Env):
         # Finally, add some gridlines (gridlines om actiespace te visualiseren)
 
         # horizontale lijnen
-        for x in range(self.screen_height + 1):
-            # syntax line(surface, color, start_pos, end_pos) -> Rect
-            pygame.draw.line(
-                canvas,
-                0,
-                (0, self.pix_square_size * x),
-                (self.screen_width, self.pix_square_size * x),
-                width=3,
-            )
+        # for x in range(self.screen_height + 1):
+        #     # syntax line(surface, color, start_pos, end_pos) -> Rect
+        #     pygame.draw.line(
+        #         canvas,
+        #         0,
+        #         (0, self.pix_square_size * x),
+        #         (self.screen_width, self.pix_square_size * x),
+        #         width=3,
+        #     )
 
-        # verticale lijnen
-        for x in range(self.screen_width + 1):
+        # # verticale lijnen
+        # for x in range(self.screen_width + 1):
 
-            pygame.draw.line(
-                canvas,
-                0,
-                (self.pix_square_size * x, 0),
-                (self.pix_square_size * x, self.screen_height),
-                width=3,
-            )
+        #     pygame.draw.line(
+        #         canvas,
+        #         0,
+        #         (self.pix_square_size * x, 0),
+        #         (self.pix_square_size * x, self.screen_height),
+        #         width=3,
+        #     )
 
         if self.render_mode == "human":
             # The following line copies our drawings from `canvas` to the visible window
