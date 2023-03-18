@@ -2,7 +2,7 @@ import gym
 from gym import spaces
 import pygame
 import numpy as np
-
+from IPython.display import clear_output
 
 class GridWorldEnv(gym.Env):
     metadata = {"render_modes": ["human", "rgb_array"], "render_fps": 4}
@@ -48,7 +48,7 @@ class GridWorldEnv(gym.Env):
             2: np.array([-1, 0]),
             3: np.array([0, -1]),
             # tijdelijke noop
-            # 4: np.array([0,0])
+            4: np.array([0,0])
         }
 
         assert render_mode is None or render_mode in self.metadata["render_modes"]
@@ -68,9 +68,10 @@ class GridWorldEnv(gym.Env):
         return {"agent": self._agent_location, "target": self._target_location}
 
     def _get_info(self):
+        # Manhattan distance (l1 norm)
         return {
             "distance": np.linalg.norm(
-                self._agent_location - self._target_location, ord=1
+                self._agent_location - self._target_location, ord=2
             )
         }
 
@@ -102,11 +103,26 @@ class GridWorldEnv(gym.Env):
     def check_collision(self):
         self.is_dead = False
         for p in self.four_points:
-            # kijken of punt wit is
+            # look if one of the four corner points of the agent overlaps white pixel on canvas (aka crashed)
             if self.map.get_at((int(p[0]*self.pix_square_size), int(p[1]*self.pix_square_size))) == (255, 255, 255):
                 # print(f"punt: {p[0]},{p[1]} => DEAD")
                 self.is_dead = True
                 break
+
+    def normalize_distance_and_trasnform_to_reward(self, distance):
+        # maximum possible distance (when agent is at the bottom left corner )
+        max_distance = 33.0
+        # when agent reached target
+        min_distance = 0.0
+
+        normalized_distance = (distance - min_distance) / (max_distance - min_distance) 
+
+        # [0.4 - 1]
+        normalized_scaled = normalized_distance * 0.6 + 0.4
+
+        # when distance is max, reward will be 0
+        # when distance is min (1 cell of target), reward will be 0.6
+        return 1 - normalized_scaled
 
     def step(self, action):
         # Map the action (element of {0,1,2,3}) to the direction we walk in
@@ -130,25 +146,23 @@ class GridWorldEnv(gym.Env):
         observation = self._get_obs()
         info = self._get_info()
 
-        # An episode is done if the agent has collided with the border 
+        # punishing when colliding with the edge
         if self.is_dead:
-            
-            # mogelijkheid 1: stoppen aan bordern
-            # direction terug aftrekken want mag niet af pad gaan
             self._agent_location = self._agent_location - direction
             self.is_dead = False
-
-
-            # mogelijkheid 2: punishen of crashen
-            # reward = -1
-            # terminated = True
-            # return observation, reward, False, False, info
+            reward = -1
+            return observation, reward, False, False, info
         
-        # or reached the target
+        # checking if agent reached the target
         terminated = np.array_equal( self._agent_location, self._target_location)
 
-        reward = 1 if terminated else -0.1  # Binary sparse rewards
-
+        # if target reached, full reward
+        if terminated:
+            reward = 1
+        else:
+            distance = info["distance"]
+            # import ipdb; ipdb.set_trace()
+            reward = self.normalize_distance_and_trasnform_to_reward(distance)
 
         if self.render_mode == "human":
             self._render_frame()
