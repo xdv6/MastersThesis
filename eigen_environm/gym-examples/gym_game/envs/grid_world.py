@@ -2,7 +2,7 @@ import gym
 from gym import spaces
 import pygame
 import numpy as np
-from IPython.display import clear_output
+
 
 class GridWorldEnv(gym.Env):
     metadata = {"render_modes": ["human", "rgb_array"], "render_fps": 4}
@@ -21,7 +21,7 @@ class GridWorldEnv(gym.Env):
         # list with the four corner points of the agent
         self.four_points = []
 
-        # bool dat weergeeft of agent nog niet gecrashed is
+        # bool that looks if agent has collided with the border
         self.is_dead = False
 
         # Observations are dictionaries with the agent's and the target's location.
@@ -47,8 +47,8 @@ class GridWorldEnv(gym.Env):
             1: np.array([0, 1]),
             2: np.array([-1, 0]),
             3: np.array([0, -1]),
-            # tijdelijke noop
-            4: np.array([0,0])
+            # noop for testing with keyboard
+            # 4: np.array([0,0])
         }
 
         assert render_mode is None or render_mode in self.metadata["render_modes"]
@@ -68,7 +68,7 @@ class GridWorldEnv(gym.Env):
         return {"agent": self._agent_location, "target": self._target_location}
 
     def _get_info(self):
-        # Manhattan distance (l1 norm)
+        # Euclidian distance (l2 norm)
         return {
             "distance": np.linalg.norm(
                 self._agent_location - self._target_location, ord=2
@@ -210,26 +210,26 @@ class GridWorldEnv(gym.Env):
         # Finally, add some gridlines (gridlines om actiespace te visualiseren)
 
         # horizontale lijnen
-        # for x in range(self.screen_height + 1):
-        #     # syntax line(surface, color, start_pos, end_pos) -> Rect
-        #     pygame.draw.line(
-        #         canvas,
-        #         0,
-        #         (0, self.pix_square_size * x),
-        #         (self.screen_width, self.pix_square_size * x),
-        #         width=3,
-        #     )
+        for x in range(self.screen_height + 1):
+            # syntax line(surface, color, start_pos, end_pos) -> Rect
+            pygame.draw.line(
+                canvas,
+                0,
+                (0, self.pix_square_size * x),
+                (self.screen_width, self.pix_square_size * x),
+                width=3,
+            )
 
-        # # verticale lijnen
-        # for x in range(self.screen_width + 1):
+        # verticale lijnen
+        for x in range(self.screen_width + 1):
 
-        #     pygame.draw.line(
-        #         canvas,
-        #         0,
-        #         (self.pix_square_size * x, 0),
-        #         (self.pix_square_size * x, self.screen_height),
-        #         width=3,
-        #     )
+            pygame.draw.line(
+                canvas,
+                0,
+                (self.pix_square_size * x, 0),
+                (self.pix_square_size * x, self.screen_height),
+                width=3,
+            )
 
         if self.render_mode == "human":
             # The following line copies our drawings from `canvas` to the visible window
