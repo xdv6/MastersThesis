@@ -48,7 +48,7 @@ class GridWorldEnv(gym.Env):
             2: np.array([-1, 0]),
             3: np.array([0, -1]),
             # noop for testing with keyboard
-            4: np.array([0,0])
+            # 4: np.array([0,0])
         }
 
         assert render_mode is None or render_mode in self.metadata["render_modes"]
@@ -109,7 +109,7 @@ class GridWorldEnv(gym.Env):
                 self.is_dead = True
                 break
 
-    def normalize_distance_and_trasnform_to_reward(self, distance):
+    def normalize_distance_and_transform_to_reward(self, distance):
         # maximum possible distance (when agent is at the bottom left corner )
         max_distance = 25.0
         # when agent reached target
@@ -164,7 +164,7 @@ class GridWorldEnv(gym.Env):
         else:
             distance = info["distance"]
             # import ipdb; ipdb.set_trace()
-            reward = self.normalize_distance_and_trasnform_to_reward(distance)
+            reward = self.normalize_distance_and_transform_to_reward(distance)
 
         if self.render_mode == "human":
             self._render_frame()
