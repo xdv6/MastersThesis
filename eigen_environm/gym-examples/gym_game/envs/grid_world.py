@@ -7,10 +7,10 @@ import numpy as np
 class GridWorldEnv(gym.Env):
     metadata = {"render_modes": ["human", "rgb_array"], "render_fps": 4}
 
-    def __init__(self, render_mode=None, size=30):
+    def __init__(self, render_mode=None, size=40):
 
-        self.screen_width = 401
-        self.screen_height = 1172
+        self.screen_width = 400
+        self.screen_height = 1200
 
         # The size of a single grid square in pixels
         self.pix_square_size = size
@@ -48,7 +48,7 @@ class GridWorldEnv(gym.Env):
             2: np.array([-1, 0]),
             3: np.array([0, -1]),
             # noop for testing with keyboard
-            # 4: np.array([0,0])
+            4: np.array([0,0])
         }
 
         assert render_mode is None or render_mode in self.metadata["render_modes"]
@@ -111,7 +111,7 @@ class GridWorldEnv(gym.Env):
 
     def normalize_distance_and_trasnform_to_reward(self, distance):
         # maximum possible distance (when agent is at the bottom left corner )
-        max_distance = 33.0
+        max_distance = 25.0
         # when agent reached target
         min_distance = 0.0
 
@@ -143,15 +143,17 @@ class GridWorldEnv(gym.Env):
         # check if agent collided with the border
         self.check_collision()
 
-        observation = self._get_obs()
-        info = self._get_info()
-
         # punishing when colliding with the edge
         if self.is_dead:
             self._agent_location = self._agent_location - direction
+            observation = self._get_obs()
+            info = self._get_info()
             self.is_dead = False
             reward = -1
             return observation, reward, False, False, info
+        
+        observation = self._get_obs()
+        info = self._get_info()
         
         # checking if agent reached the target
         terminated = np.array_equal( self._agent_location, self._target_location)
