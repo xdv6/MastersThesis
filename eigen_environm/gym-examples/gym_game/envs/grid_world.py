@@ -2,7 +2,7 @@ import gym
 from gym import spaces
 import pygame
 import numpy as np
-import collections
+
 
 class GridWorldEnv(gym.Env):
     metadata = {"render_modes": ["human", "rgb_array"], "render_fps": 4}
@@ -11,12 +11,6 @@ class GridWorldEnv(gym.Env):
 
         self.screen_width = 400
         self.screen_height = 1200
-
-        # set containing all visited cells in the current game
-        self.visited_cells = set()
-
-        # bool checking if agent visited a cell that was already visited in the current game
-        self.revisited_cell = False
 
         # The size of a single grid square in pixels
         self.pix_square_size = size
@@ -54,7 +48,7 @@ class GridWorldEnv(gym.Env):
             2: np.array([-1, 0]),
             3: np.array([0, -1]),
             # noop for testing with keyboard
-            4: np.array([0,0])
+            # 4: np.array([0,0])
         }
 
         assert render_mode is None or render_mode in self.metadata["render_modes"]
@@ -82,8 +76,6 @@ class GridWorldEnv(gym.Env):
         }
 
     def reset(self, seed=None, options=None):
-        # reset the set with visited cells
-        self.visited_cells.clear()
 
         # startpunt van agent (vastgezet op bepaalde pixels), positie afhankelijk van gridcelgrootte
         coo_agent_x = int(90/ self.pix_square_size)
@@ -130,15 +122,7 @@ class GridWorldEnv(gym.Env):
 
         # when distance is max, reward will be 0
         # when distance is min (1 cell of target), reward will be 0.6
-        reversed_normalized = 1 - normalized_scaled
-
-        if self.revisited_cell:
-            self.revisited_cell = False
-            # punish if revisited cell
-            reversed_normalized = reversed_normalized - 0.6
-
-
-        return reversed_normalized
+        return 1 - normalized_scaled
 
     def step(self, action):
         # Map the action (element of {0,1,2,3}) to the direction we walk in
@@ -146,13 +130,6 @@ class GridWorldEnv(gym.Env):
 
         # change position of agent (position is top left corner)
         self._agent_location = self._agent_location + direction
-
-        agent_location_tuple = tuple(self._agent_location)
-        # check if agent already visited the cell
-        if self.visited_cells.__contains__(agent_location_tuple):
-            self.revisited_cell = True
-        else:
-            self.visited_cells.add(agent_location_tuple)
 
         # caculate 4 collision points
         left_top = self._agent_location
