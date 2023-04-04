@@ -28,6 +28,10 @@
 
 
 
+### ProtoTree trainen gridpath (vgg) freezen van net weights
+
+```python3 main_tree.py --epochs 200 --log_dir ./runs/gridpath/gridpath_200_episodes --dataset gridpath --lr 0.01 --lr_block 0.01 --lr_net 1e-2 --num_features 3 --depth 8 --net vgg11 --milestones 60,70,80,90,100 --freeze_epochs 100 --pruning_threshold_leaves 0.28 ```
+
 
 
 

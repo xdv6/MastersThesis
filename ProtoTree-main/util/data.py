@@ -26,7 +26,9 @@ def get_data(args: argparse.Namespace):
     if args.dataset == 'CARS':
         return get_cars(True, './data/cars/dataset/train', './data/cars/dataset/train', './data/cars/dataset/test')
     if args.dataset == 'frozen_lake':
-        return get_lake(True, './data/frozen_lake/dataset', './data/frozen_lake/dataset', './data/frozen_lake/dataset')
+        return get_custom_dataset(True, './data/frozen_lake/dataset', './data/frozen_lake/dataset', './data/frozen_lake/dataset')
+    if args.dataset == 'gridpath':
+        return get_custom_dataset(True, './data/gridpath/dataset', './data/gridpath/dataset', './data/gridpath/dataset')
     raise Exception(f'Could not load data set "{args.dataset}"!')
 
 
@@ -144,7 +146,7 @@ def get_cars(augment: bool, train_dir: str, project_dir: str, test_dir: str, img
     return trainset, projectset, testset, classes, shape
 
 
-def get_lake(augment: bool, train_dir: str, project_dir: str, test_dir: str, img_size=40):
+def get_custom_dataset(augment: bool, train_dir: str, project_dir: str, test_dir: str, img_size=40):
     transform = transforms.Compose([
 
         transforms.ToTensor(),
@@ -159,3 +161,4 @@ def get_lake(augment: bool, train_dir: str, project_dir: str, test_dir: str, img
     classes = trainset.classes
 
     return trainset, projectset, testset, classes, shape
+
