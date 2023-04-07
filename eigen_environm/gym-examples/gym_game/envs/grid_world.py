@@ -7,16 +7,15 @@ import numpy as np
 class GridWorldEnv(gym.Env):
     metadata = {"render_modes": ["human", "rgb_array"], "render_fps": 4}
 
-    def __init__(self, render_mode=None, size=40):
-
-        self.screen_width = 400
-        self.screen_height = 1200
-
+    def __init__(self, render_mode=None, size=30):
+        
         # The size of a single grid square in pixels
         self.pix_square_size = size
 
         # background image with tracks
-        self.map = pygame.image.load("./afbeeldingen/straat_padded.png")
+        self.map = pygame.image.load("./afbeeldingen/straat_meer_bochten_links.png")
+        self.screen_width = self.map.get_width()
+        self.screen_height = self.map.get_height()
 
         # list with the four corner points of the agent
         self.four_points = []
@@ -78,13 +77,13 @@ class GridWorldEnv(gym.Env):
     def reset(self, seed=None, options=None):
 
         # startpunt van agent (vastgezet op bepaalde pixels), positie afhankelijk van gridcelgrootte
-        coo_agent_x = int(90/ self.pix_square_size)
-        coo_agent_y = int(990/self.pix_square_size)
+        coo_agent_x = int(180/ self.pix_square_size)
+        coo_agent_y = int(1320/self.pix_square_size)
 
         self._agent_location = np.array([coo_agent_x, coo_agent_y], dtype=np.int32)
 
         # targetlocatie
-        coo_target_x = int(240/ self.pix_square_size)
+        coo_target_x = int(360/ self.pix_square_size)
         coo_target_y = int(120/self.pix_square_size)
 
         self._target_location = np.array([coo_target_x, coo_target_y], dtype=np.int32)
@@ -184,13 +183,13 @@ class GridWorldEnv(gym.Env):
         if self.clock is None and self.render_mode == "human":
             self.clock = pygame.time.Clock()
 
-        canvas = pygame.image.load("./afbeeldingen/straat_padded.png")
+        canvas = pygame.image.load("./afbeeldingen/straat_meer_bochten_links.png")
         
 
         # First we draw the target
         pygame.draw.rect(
             canvas,
-            (255, 0, 0),
+            (0, 255, 0),
             # syntax: Rect(top_left_corner_postion, (width, height))
             pygame.Rect(
                 self.pix_square_size * self._target_location,
@@ -212,26 +211,26 @@ class GridWorldEnv(gym.Env):
         # Finally, add some gridlines (gridlines om actiespace te visualiseren)
 
         # horizontale lijnen
-        # for x in range(self.screen_height + 1):
-        #     # syntax line(surface, color, start_pos, end_pos) -> Rect
-        #     pygame.draw.line(
-        #         canvas,
-        #         0,
-        #         (0, self.pix_square_size * x),
-        #         (self.screen_width, self.pix_square_size * x),
-        #         width=3,
-        #     )
+        for x in range(self.screen_height + 1):
+            # syntax line(surface, color, start_pos, end_pos) -> Rect
+            pygame.draw.line(
+                canvas,
+                0,
+                (0, self.pix_square_size * x),
+                (self.screen_width, self.pix_square_size * x),
+                width=3,
+            )
 
-        # # verticale lijnen
-        # for x in range(self.screen_width + 1):
+        # verticale lijnen
+        for x in range(self.screen_width + 1):
 
-        #     pygame.draw.line(
-        #         canvas,
-        #         0,
-        #         (self.pix_square_size * x, 0),
-        #         (self.pix_square_size * x, self.screen_height),
-        #         width=3,
-        #     )
+            pygame.draw.line(
+                canvas,
+                0,
+                (self.pix_square_size * x, 0),
+                (self.pix_square_size * x, self.screen_height),
+                width=3,
+            )
 
         if self.render_mode == "human":
             # The following line copies our drawings from `canvas` to the visible window
