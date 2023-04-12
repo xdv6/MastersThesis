@@ -164,7 +164,7 @@ class GridWorldEnv(gym.Env):
 
         # if target reached, full reward
         if terminated:
-            reward = 150
+            reward = 2500
         else:
             distance = info["distance"]
             # import ipdb; ipdb.set_trace()
