@@ -114,7 +114,7 @@ class GridWorldEnv(gym.Env):
         for p in self.four_points:
             # print(f"punt: {p[0]},{p[1]}")
             # print(f"kleurwaard: {self.map.get_at((int(p[0]*self.pix_square_size), int(p[1]*self.pix_square_size)))}")
-            GRAY_THRESHOLD = 200
+            GRAY_THRESHOLD = 110
             color = self.map.get_at((int(p[0]*self.pix_square_size), int(p[1]*self.pix_square_size)))
             gray_value = (color[0] + color[1] + color[2]) // 3
             # look if one of the four corner points of the agent overlaps white pixel on canvas (aka crashed)
