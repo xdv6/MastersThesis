@@ -214,7 +214,7 @@ class GridWorldEnv(gym.Env):
         # Now we draw the agent
         pygame.draw.rect(
             canvas,
-            (0, 0, 255),
+            (200, 255, 255),
             pygame.Rect(
                 self.pix_square_size * self._agent_location,
                 (self.pix_square_size, self.pix_square_size),
