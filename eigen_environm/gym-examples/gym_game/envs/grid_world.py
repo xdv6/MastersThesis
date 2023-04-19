@@ -14,7 +14,7 @@ class GridWorldEnv(gym.Env):
         self.pix_square_size = size
 
         # background image with tracks
-        self.map = pygame.image.load("./afbeeldingen/straat_meer_bochten_links.png")
+        self.map = pygame.image.load("./afbeeldingen/street_high_contrast.png")
         self.screen_width = 1230
         self.screen_height = 855
 
@@ -162,7 +162,7 @@ class GridWorldEnv(gym.Env):
             observation = self._get_obs()
             info = self._get_info()
             self.is_dead = False
-            reward = -1
+            reward = 0
             return observation, reward, False, False, info
         
         observation = self._get_obs()
@@ -173,7 +173,7 @@ class GridWorldEnv(gym.Env):
 
         # if target reached, full reward
         if terminated:
-            reward = 2500
+            reward = 100
         else:
             distance = info["distance"]
             # import ipdb; ipdb.set_trace()
@@ -197,7 +197,7 @@ class GridWorldEnv(gym.Env):
         if self.clock is None and self.render_mode == "human":
             self.clock = pygame.time.Clock()
 
-        canvas = pygame.image.load("./afbeeldingen/straat_meer_bochten_links.png")
+        canvas = pygame.image.load("./afbeeldingen/street_high_contrast.png")
         
 
         # First we draw the target
