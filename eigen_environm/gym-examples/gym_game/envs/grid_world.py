@@ -14,9 +14,9 @@ class GridWorldEnv(gym.Env):
         self.pix_square_size = size
 
         # background image with tracks
-        self.map = pygame.image.load("./afbeeldingen/street_high_contrast.png")
+        self.map = pygame.image.load("./afbeeldingen/contrast_v3.jpg")
         self.screen_width = 1230
-        self.screen_height = 855
+        self.screen_height = 990
 
         # list with the four corner points of the agent
         self.four_points = []
@@ -48,7 +48,7 @@ class GridWorldEnv(gym.Env):
             2: np.array([-1, 0]),
             3: np.array([0, -1]),
             # noop for testing with keyboard
-            # 4: np.array([0,0])
+            4: np.array([0,0])
         }
 
         assert render_mode is None or render_mode in self.metadata["render_modes"]
@@ -69,23 +69,25 @@ class GridWorldEnv(gym.Env):
 
     def _get_info(self):
         # Euclidian distance (l2 norm)
-        return {
-            "distance": np.linalg.norm(
-                self._agent_location - self._target_location, ord=2
-            )
-        }
+        # return {
+        #     "distance": np.linalg.norm(
+        #         self._agent_location - self._target_location, ord=2
+        #     )
+        # }
+
+        return { "distance": self._agent_location[1] - self._target_location[1] }
 
     def reset(self, seed=None, options=None):
 
         # startpunt van agent (vastgezet op bepaalde pixels), positie afhankelijk van gridcelgrootte
         coo_agent_x = int(555/ self.pix_square_size)
-        coo_agent_y = int(795/self.pix_square_size)
+        coo_agent_y = int(945/self.pix_square_size)
 
         self._agent_location = np.array([coo_agent_x, coo_agent_y], dtype=np.int32)
 
         # targetlocatie
-        coo_target_x = int(675/ self.pix_square_size)
-        coo_target_y = int(75/self.pix_square_size)
+        coo_target_x = int(645/ self.pix_square_size)
+        coo_target_y = int(45/self.pix_square_size)
 
         self._target_location = np.array([coo_target_x, coo_target_y], dtype=np.int32)
 
@@ -173,7 +175,7 @@ class GridWorldEnv(gym.Env):
 
         # if target reached, full reward
         if terminated:
-            reward = 100
+            reward = 1000
         else:
             distance = info["distance"]
             # import ipdb; ipdb.set_trace()
@@ -197,7 +199,7 @@ class GridWorldEnv(gym.Env):
         if self.clock is None and self.render_mode == "human":
             self.clock = pygame.time.Clock()
 
-        canvas = pygame.image.load("./afbeeldingen/street_high_contrast.png")
+        canvas = pygame.image.load("./afbeeldingen/contrast_v3.jpg")
         
 
         # First we draw the target
