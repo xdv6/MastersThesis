@@ -48,7 +48,7 @@ class GridWorldEnv(gym.Env):
             2: np.array([-1, 0]),
             3: np.array([0, -1]),
             # noop for testing with keyboard
-            # 4: np.array([0,0])
+            4: np.array([0,0])
         }
 
         assert render_mode is None or render_mode in self.metadata["render_modes"]
@@ -131,7 +131,7 @@ class GridWorldEnv(gym.Env):
         # # when distance is min (1 cell of target), reward will be 0.6
         # reversed_normalized = 1 - normalized_scaled
         
-        return -1
+        return previous_distance - distance
     
 
 
@@ -164,8 +164,8 @@ class GridWorldEnv(gym.Env):
             observation = self._get_obs()
             info = self._get_info()
             self.is_dead = False
-            reward = -1
-            return observation, reward, False, False, info
+            reward = 0
+            return observation, reward, True, False, info
         
         observation = self._get_obs()
         info = self._get_info()
