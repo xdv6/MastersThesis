@@ -28,11 +28,13 @@
 
 
 
-### ProtoTree trainen gridpath (vgg) freezen van net weights
+### ProtoTree trainen gridpath (vgg) freezen van net weights KONT
 
-```python3 main_tree.py --epochs 100 --log_dir ./runs/gridpath/gridpath_no_freeze_test  --dataset gridpath --lr 0.01 --lr_block 0.01 --lr_net 1e-2 --num_features 3 --depth 4 --net vgg11 --milestones 60,70,80,90,100 --freeze_epochs 30 --pruning_threshold_leaves 0.4 ```
+```python3 main_tree.py --epochs 100 --log_dir ./runs/SGD_vs_KONT/KONT --dataset gridpath --lr 0.01 --lr_block 0.01 --lr_net 1e-2 --num_features 3 --depth 4 --net vgg11 --milestones 60,70,80,90,100 --freeze_epochs 100 --pruning_threshold_leaves 0.4 ```
 
+### ProtoTree trainen gridpath (vgg) freezen van net weights SGD
 
+```python3 main_tree.py --epochs 100 --log_dir ./runs/SGD_vs_KONT/KONT --dataset gridpath --lr 0.01 --lr_block 0.01 --lr_net 1e-2 --num_features 3 --depth 4 --net vgg11 --milestones 60,70,80,90,100 --freeze_epochs 100 --pruning_threshold_leaves 0.4 --disable_derivative_free_leaf_optim --lr_pi 0.001 ```
 
 
 

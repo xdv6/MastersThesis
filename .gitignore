@@ -9,3 +9,8 @@ notebooks_mario/MadMario/checkpoints
 notebooks_mario/MadMario/__pycache__
 
 eigen_environm/gym-examples/gym_game/envs/__pycache__
+
+eigen_environm/gym-examples/model/
+
+atari_boxing/model/
+atari_boxing/wandb/
