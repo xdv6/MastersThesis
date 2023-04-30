@@ -14,3 +14,5 @@ eigen_environm/gym-examples/model/
 
 atari_boxing/model/
 atari_boxing/wandb/
+
+**/__pycache__/
