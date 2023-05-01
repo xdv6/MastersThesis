@@ -28,6 +28,7 @@ from copy import deepcopy
 from dqn_util import *
 
 
+
 if __name__ == '__main__':
     """
     setup Prototree logging variables
@@ -101,7 +102,6 @@ if __name__ == '__main__':
     analyse_output_shape_dqn(policy_net, log, device, example_screen)
 
     target_net = deepcopy(policy_net)
-    target_net = target_net.to(device=device)
 
     leaf_labels = dict()
     best_train_acc = 0.
@@ -137,7 +137,7 @@ if __name__ == '__main__':
 
     memory = ReplayMemory(config.get("REPLAY_BUFFER"))
 
-    for iteration in range(config.get("EPISODES")):
+    for epoch in range(config.get("EPISODES")):
         # Initialize the environment and state
         env.reset()
 
@@ -169,7 +169,11 @@ if __name__ == '__main__':
             state = next_state
 
             # Perform one step of the optimization 
-            optimize_model_prototree(policy_net, optimizer, memory)
+            log.log_message("\nEpoch %s"%str(epoch))
+            # Freeze (part of) network for some epochs if indicated in args
+            freeze(policy_net, epoch, params_to_freeze, params_to_train, args, log)
+            log_learning_rates(optimizer, args, log)
+            train_info = train_epoch(policy_net, trainloader, optimizer, epoch, args.disable_derivative_free_leaf_optim, device, log, log_prefix)
 
             # if agent did not reach target after RESET_ENV_FREQ actions, reset environment
             if (t + 1) % config.get("RESET_ENV_FREQ") == 0:
@@ -181,7 +185,7 @@ if __name__ == '__main__':
                     win_count += 1
 
                 log_dict = {
-                    "episode": iteration + 1,
+                    "episode": epoch + 1,
                     "reached_target": spel_gelukt
                 }
                 wandb.log(log_dict)
@@ -192,12 +196,12 @@ if __name__ == '__main__':
             
 
         # Update the target network, copying all weights and biases to target DQN
-        if iteration % config.get("TARGET_UPDATE") == 0:
-            target_net.load_state_dict(policy_net.state_dict())
+        if epoch % config.get("TARGET_UPDATE") == 0:
+            target_net = deepcopy(policy_net)
         
         # save model after frequency
-        # if iteration % config.get("SAVE_FREQ") == 0:
-        #     torch.save(policy_net, config.get("MODEL_dir_file") + str(iteration) + '.pkl')
+        # if epoch % config.get("SAVE_FREQ") == 0:
+        #     torch.save(policy_net, config.get("MODEL_dir_file") + str(epoch) + '.pkl')
 
     print('Complete')
     env.render()
