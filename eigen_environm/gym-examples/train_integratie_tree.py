@@ -15,8 +15,6 @@ def train_epoch(config: dict,
                 memory: ReplayMemory,
                 policy_net: ProtoTree,
                 target_net: ProtoTree,
-                state_batch: torch.Tensor,
-                next_state_batch: torch.Tensor,
                 optimizer: torch.optim.Optimizer,
                 epoch: int,
                 disable_derivative_free_leaf_optim: bool,
@@ -46,9 +44,10 @@ def train_epoch(config: dict,
         eye = torch.eye(policy_net._num_classes).to(device)
 
     # Iterate through the data set to update leaves, prototypes and network
-    
+    state_batch, action_batch, reward_batch, non_final_next_states, non_final_mask = get_batch(memory, config)
+
     xs = state_batch
-    ys = next_state_batch
+    ys = non_final_next_states
     # Make sure the model is in train mode
     policy_net.train()
     # Reset the gradients
@@ -59,16 +58,14 @@ def train_epoch(config: dict,
     # Perform a forward pass through the policy network
     ys_pred, info = policy_net.forward(xs)
     # compute the Q-estimate 
-    action_batch = torch.zeros(64, dtype=torch.int64).unsqueeze(dim=1).to(device)
     state_action_values = ys_pred.gather(1, action_batch)
 
     # Perform a forward pass through the target network
     with torch.no_grad():
         ys_target, _ = target_net.forward(ys)
+        next_state_values = torch.zeros( config.get("BATCH_SIZE"), device=device)
         # compute the Q-target
-        next_state_values = torch.zeros( xs.shape[0], device=device)
-        # pas aan met mask
-        next_state_values = ys_target.max(1)[0]
+        next_state_values[non_final_mask] = ys_target.max(1)[0]
 
     expected_state_action_values = ((next_state_values * config.get("GAMMA") + reward_batch).unsqueeze(1))
     

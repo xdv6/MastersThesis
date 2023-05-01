@@ -136,7 +136,7 @@ if __name__ == '__main__':
 
     next_state_batch = get_screen(env)
     next_state_batch = next_state_batch.repeat(64, 1, 1, 1)
-    train_info = train_epoch(config, memory, policy_net, target_net, state_batch, next_state_batch, optimizer, epoch, args.disable_derivative_free_leaf_optim, device, log, log_prefix)
+    train_info = train_epoch(config, memory, policy_net, target_net, optimizer, epoch, args.disable_derivative_free_leaf_optim, device, log, log_prefix)
 
 
 
