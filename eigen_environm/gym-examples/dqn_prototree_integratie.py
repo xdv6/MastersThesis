@@ -126,7 +126,7 @@ if __name__ == '__main__':
     "EPS_END" : 0.1,
     "lr":0.0001, 
     "REPLAY_BUFFER":10000,
-    "EPISODES": 3,
+    "EPISODES": 100,
     "TARGET_UPDATE": 200,
     "SAVE_FREQ": 10,
     "RESET_ENV_FREQ": 200,
@@ -180,15 +180,16 @@ if __name__ == '__main__':
             """
             Optimize the policy_net
             """
-            # Perform one step of the optimization 
-            log.log_message("\nEpoch %s"%str(epoch))
-            # Freeze (part of) network for some epochs if indicated in args
-            freeze(policy_net, epoch, params_to_freeze, params_to_train, args, log)
-            log_learning_rates(optimizer, args, log)
-            train_info = train_epoch(config, memory, policy_net, target_net, optimizer, epoch, args.disable_derivative_free_leaf_optim, device, log, log_prefix)
-            save_tree(policy_net, optimizer, scheduler, epoch, log, args)
-            best_train_acc = save_best_train_tree(policy_net, optimizer, scheduler, best_train_acc, train_info['train_accuracy'], log)
-            leaf_labels = analyse_leafs(policy_net, epoch, n_actions, leaf_labels, args.pruning_threshold_leaves, log)
+            if len(memory) > config.get("BATCH_SIZE"):
+                # Perform one step of the optimization 
+                log.log_message("\nEpoch %s"%str(epoch))
+                # Freeze (part of) network for some epochs if indicated in args
+                freeze(policy_net, epoch, params_to_freeze, params_to_train, args, log)
+                log_learning_rates(optimizer, args, log)
+                train_info = train_epoch(config, memory, policy_net, target_net, optimizer, epoch, args.disable_derivative_free_leaf_optim, device, log, log_prefix)
+                save_tree(policy_net, optimizer, scheduler, epoch, log, args)
+                # best_train_acc = save_best_train_tree(policy_net, optimizer, scheduler, best_train_acc, train_info['train_accuracy'], log)
+                leaf_labels = analyse_leafs(policy_net, epoch, n_actions, leaf_labels, args.pruning_threshold_leaves, log)
 
             # if agent did not reach target after RESET_ENV_FREQ actions, reset environment
             if (t + 1) % config.get("RESET_ENV_FREQ") == 0:

@@ -24,6 +24,7 @@ def train_epoch(config: dict,
                 progress_prefix: str = 'Train Epoch'
                 ) -> dict:
     
+    
     policy_net = policy_net.to(device)
     # Make sure the model is in eval mode
     policy_net.eval()
@@ -97,23 +98,12 @@ def train_epoch(config: dict,
                 F.relu_(leaf._dist_params) #dist_params values can get slightly negative because of floating point issues. therefore, set to zero.
                 leaf._dist_params += update
 
-    # Count the number of correct classifications
-    ys_pred_max = torch.argmax(ys_pred, dim=1)
-    
-    correct = torch.sum(torch.eq(ys_pred_max, ys))
-    acc = correct.item() / float(len(xs))
-
-    print(f' Loss: {loss.item():.3f}, Acc: {acc:.3f}')
+    print(f' Loss: {loss.item():.3f}')
     
     # Compute metrics over this batch
     total_loss+=loss.item()
-    total_acc+=acc
-
-    if log is not None:
-        log.log_values(log_loss, epoch, 1, loss.item(), acc)
 
     train_info['loss'] = total_loss/float(1)
-    train_info['train_accuracy'] = total_acc/float(1)
     return train_info 
 
 
