@@ -233,30 +233,19 @@ if __name__ == '__main__':
     pruned_tree = deepcopy(policy_net)
     pruned_tree = policy_net
 
-    # '''
-    # PROJECT
-    # '''
-    # project_info, policy_net = project_with_class_constraints(deepcopy(pruned_tree), projectloader, device, args, log)
-    # name = "pruned_and_projected"
-    # save_tree_description(policy_net, optimizer, scheduler, name, log)
-    # pruned_projected_tree = deepcopy(policy_net)
-    # # Analyse and evaluate pruned policy_net with projected prototypes
-    # average_distance_nearest_image(project_info, policy_net, log)
-    # leaf_labels = analyse_leafs(policy_net, epoch+3, n_actions, leaf_labels, args.pruning_threshold_leaves, log)
-    # analyse_leaf_distributions(policy_net, log)
-    # eval_info = eval(policy_net, testloader, name, device, log)
-    # pruned_projected_test_acc = eval_info['test_accuracy']
-    # eval_info_samplemax = eval(policy_net, testloader, name, device, log, 'sample_max')
-    # get_avg_path_length(policy_net, eval_info_samplemax, log)
-    # eval_info_greedy = eval(policy_net, testloader, name, device, log, 'greedy')
-    # get_avg_path_length(policy_net, eval_info_greedy, log)
-    # fidelity_info = eval_fidelity(policy_net, testloader, device, log)
+    '''
+    PROJECT
+    '''
+    project_info, policy_net = project_with_class_constraints(deepcopy(pruned_tree), projectloader, device, args, log)
+    name = "pruned_and_projected"
+    save_tree_description(policy_net, optimizer, scheduler, name, log)
+    pruned_projected_tree = deepcopy(policy_net)
 
-    # # Upsample prototype for visualization
-    # project_info = upsample(policy_net, project_info, projectloader, name, args, log)
+    # Upsample prototype for visualization
+    project_info = upsample(policy_net, project_info, projectloader, name, args, log)
     
-    # # visualize policy_net
-    # gen_vis(policy_net, name, args, classes)
+    # visualize policy_net
+    gen_vis(policy_net, name, args, classes)
 
 
     
