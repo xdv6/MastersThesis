@@ -102,4 +102,106 @@ if __name__ == '__main__':
 
     target_net = deepcopy(policy_net)
     target_net = target_net.to(device=device)
+
+    leaf_labels = dict()
+    best_train_acc = 0.
+    best_test_acc = 0.
+
+    """
+    Train the tree
+    """
+
+    config =  {
+    "BATCH_SIZE":128,
+    "GAMMA" : 0.999,
+    "EPS_START": 1,
+    "EPS_END" : 0.1,
+    "lr":0.0001, 
+    "REPLAY_BUFFER":10000,
+    "EPISODES": 100000,
+    "TARGET_UPDATE": 200,
+    "SAVE_FREQ": 10,
+    "RESET_ENV_FREQ": 200,
+    "DDQN": True,
+    "MODEL_dir_file": "./model/stop_border_lagere_lr",
+    }
+
+    # Define the custom x axis metric
+    wandb.define_metric("episode")
+
+    # Define which metrics to plot against that x-axis
+    wandb.define_metric("reached_target", step_metric='episode')
+    wandb.define_metric("win_count", step_metric='episode')
+    wandb.define_metric("mean_reward", step_metric='episode')
+    wandb.define_metric("number_of_actions_in_episode", step_metric='episode')
+
+    memory = ReplayMemory(config.get("REPLAY_BUFFER"))
+
+    for iteration in range(config.get("EPISODES")):
+        # Initialize the environment and state
+        env.reset()
+
+        # state based on patch of screen (3x3 around agent)
+        state = get_screen(env)
+        spel_gelukt = 0
+        
+        for t in count():
+            env.render()
+            # wrapped._render_frame()
+            action = select_action(state, policy_net, n_actions, config)
+            _, reward, done, _, _ = env.step(action.item())
+            
+            running_sum += reward
+            counter += 1
+            mean = running_sum / counter
+
+            reward = torch.tensor([reward], device=device)
+            
+            if not done:
+                next_state = get_screen(env)
+            else:
+                next_state = None
+
+            # Store the transition in memory
+            memory.push(state, action, next_state, reward)
+
+            # Move to the next state
+            state = next_state
+
+            # Perform one step of the optimization 
+            optimize_model_prototree(policy_net, optimizer, memory)
+
+            # if agent did not reach target after RESET_ENV_FREQ actions, reset environment
+            if (t + 1) % config.get("RESET_ENV_FREQ") == 0:
+                done = True
+
+            if done:
+                if reward == 1000:
+                    spel_gelukt = 1
+                    win_count += 1
+
+                log_dict = {
+                    "episode": iteration + 1,
+                    "reached_target": spel_gelukt
+                }
+                wandb.log(log_dict)
+                wandb.log({"number_of_actions_in_episode": t})
+                wandb.log({"win_count": win_count})
+                wandb.log({"mean_reward": mean})
+                break
+            
+
+        # Update the target network, copying all weights and biases to target DQN
+        if iteration % config.get("TARGET_UPDATE") == 0:
+            target_net.load_state_dict(policy_net.state_dict())
+        
+        # save model after frequency
+        # if iteration % config.get("SAVE_FREQ") == 0:
+        #     torch.save(policy_net, config.get("MODEL_dir_file") + str(iteration) + '.pkl')
+
+    print('Complete')
+    env.render()
+    env.close()
+
+
     

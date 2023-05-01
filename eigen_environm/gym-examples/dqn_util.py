@@ -106,7 +106,7 @@ def select_action(state, policy_net, n_actions, config):
 
 
 
-def get_batch(policy_net, optimizer, memory, config):
+def get_batch(memory, config):
     if len(memory) < config.get("BATCH_SIZE"):
         return
     transitions = memory.sample( config.get("BATCH_SIZE"))
@@ -196,6 +196,8 @@ def analyse_output_shape_dqn(tree, log, device, xs):
         log.log_message("Features output shape (without 1x1 conv layer): "+str(tree._net(xs).shape))
         log.log_message("Convolutional output shape (with 1x1 conv layer): "+str(tree._add_on(tree._net(xs)).shape))
         log.log_message("Prototypes shape: "+str(tree.prototype_layer.prototype_vectors.shape))
+
+
 
 
 
