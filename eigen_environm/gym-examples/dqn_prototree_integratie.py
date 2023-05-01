@@ -106,11 +106,19 @@ if __name__ == '__main__':
     best_train_acc = 0.
     best_test_acc = 0.
 
-
     """
     Train the policy_net
     """
+    # # dummmy state batch
+    # memory = ReplayMemory(config.get("REPLAY_BUFFER"))
+    
+    # state_batch = get_screen(env)
+    # state_batch = state_batch.repeat(64, 1, 1, 1)
 
+    # next_state_batch = get_screen(env)
+    # next_state_batch = next_state_batch.repeat(64, 1, 1, 1)
+    # train_info = train_epoch(state_batch,next_state_batch, config, memory, policy_net, target_net, optimizer, epoch, args.disable_derivative_free_leaf_optim, device, log, log_prefix)
+    
     config =  {
     "BATCH_SIZE":64,
     "GAMMA" : 0.999,
@@ -118,23 +126,22 @@ if __name__ == '__main__':
     "EPS_END" : 0.1,
     "lr":0.0001, 
     "REPLAY_BUFFER":10000,
-    "EPISODES": 100000,
+    "EPISODES": 3,
     "TARGET_UPDATE": 200,
     "SAVE_FREQ": 10,
     "RESET_ENV_FREQ": 200,
-    "DDQN": True,
+    "DDQN": False,
     "MODEL_dir_file": "./model/stop_border_lagere_lr",
     }
 
-
     # Define the custom x axis metric
-    wandb.define_metric("episode")
+    # wandb.define_metric("episode")
 
     # Define which metrics to plot against that x-axis
-    wandb.define_metric("reached_target", step_metric='episode')
-    wandb.define_metric("win_count", step_metric='episode')
-    wandb.define_metric("mean_reward", step_metric='episode')
-    wandb.define_metric("number_of_actions_in_episode", step_metric='episode')
+    # wandb.define_metric("reached_target", step_metric='episode')
+    # wandb.define_metric("win_count", step_metric='episode')
+    # wandb.define_metric("mean_reward", step_metric='episode')
+    # wandb.define_metric("number_of_actions_in_episode", step_metric='episode')
 
     memory = ReplayMemory(config.get("REPLAY_BUFFER"))
 
@@ -196,10 +203,10 @@ if __name__ == '__main__':
                     "episode": epoch + 1,
                     "reached_target": spel_gelukt
                 }
-                wandb.log(log_dict)
-                wandb.log({"number_of_actions_in_episode": t})
-                wandb.log({"win_count": win_count})
-                wandb.log({"mean_reward": mean})
+                # wandb.log(log_dict)
+                # wandb.log({"number_of_actions_in_episode": t})
+                # wandb.log({"win_count": win_count})
+                # wandb.log({"mean_reward": mean})
                 break
             
 
