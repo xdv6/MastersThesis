@@ -159,6 +159,6 @@ def get_custom_dataset(augment: bool, train_dir: str, project_dir: str, test_dir
         project_dir, transform=transform)
     testset = torchvision.datasets.ImageFolder(test_dir, transform=transform)
     classes = trainset.classes
-
+    import ipdb; ipdb.set_trace()
     return trainset, projectset, testset, classes, shape
 

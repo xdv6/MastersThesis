@@ -15,13 +15,12 @@ from util.net import get_network, freeze
 from util.visualize import gen_vis
 from util.analyse import *
 from util.save import *
-from prototree.train import train_epoch, train_epoch_kontschieder
 from prototree.test import eval, eval_fidelity
 from prototree.prune import prune
 from prototree.project import project, project_with_class_constraints
 from prototree.upsample import upsample
 
-
+from train_integratie_tree import train_epoch, train_leaves_epoch
 import torch
 from shutil import copy
 from copy import deepcopy
@@ -107,105 +106,109 @@ if __name__ == '__main__':
     best_train_acc = 0.
     best_test_acc = 0.
 
+    trainloader, projectloader, testloader, classes, num_channels = get_dataloaders_dqn(args, example_screen)
+    import ipdb; ipdb.set_trace()
+
+
     """
     Train the tree
     """
 
-    config =  {
-    "BATCH_SIZE":128,
-    "GAMMA" : 0.999,
-    "EPS_START": 1,
-    "EPS_END" : 0.1,
-    "lr":0.0001, 
-    "REPLAY_BUFFER":10000,
-    "EPISODES": 100000,
-    "TARGET_UPDATE": 200,
-    "SAVE_FREQ": 10,
-    "RESET_ENV_FREQ": 200,
-    "DDQN": True,
-    "MODEL_dir_file": "./model/stop_border_lagere_lr",
-    }
+    # config =  {
+    # "BATCH_SIZE":64,
+    # "GAMMA" : 0.999,
+    # "EPS_START": 1,
+    # "EPS_END" : 0.1,
+    # "lr":0.0001, 
+    # "REPLAY_BUFFER":10000,
+    # "EPISODES": 100000,
+    # "TARGET_UPDATE": 200,
+    # "SAVE_FREQ": 10,
+    # "RESET_ENV_FREQ": 200,
+    # "DDQN": True,
+    # "MODEL_dir_file": "./model/stop_border_lagere_lr",
+    # }
 
-    # Define the custom x axis metric
-    wandb.define_metric("episode")
+    # # Define the custom x axis metric
+    # wandb.define_metric("episode")
 
-    # Define which metrics to plot against that x-axis
-    wandb.define_metric("reached_target", step_metric='episode')
-    wandb.define_metric("win_count", step_metric='episode')
-    wandb.define_metric("mean_reward", step_metric='episode')
-    wandb.define_metric("number_of_actions_in_episode", step_metric='episode')
+    # # Define which metrics to plot against that x-axis
+    # wandb.define_metric("reached_target", step_metric='episode')
+    # wandb.define_metric("win_count", step_metric='episode')
+    # wandb.define_metric("mean_reward", step_metric='episode')
+    # wandb.define_metric("number_of_actions_in_episode", step_metric='episode')
 
-    memory = ReplayMemory(config.get("REPLAY_BUFFER"))
+    # memory = ReplayMemory(config.get("REPLAY_BUFFER"))
 
-    for epoch in range(config.get("EPISODES")):
-        # Initialize the environment and state
-        env.reset()
+    # for epoch in range(config.get("EPISODES")):
+    #     # Initialize the environment and state
+    #     env.reset()
 
-        # state based on patch of screen (3x3 around agent)
-        state = get_screen(env)
-        spel_gelukt = 0
+    #     # state based on patch of screen (3x3 around agent)
+    #     state = get_screen(env)
+    #     spel_gelukt = 0
         
-        for t in count():
-            env.render()
-            # wrapped._render_frame()
-            action = select_action(state, policy_net, n_actions, config)
-            _, reward, done, _, _ = env.step(action.item())
+    #     for t in count():
+    #         env.render()
+    #         # wrapped._render_frame()
+    #         action = select_action(state, policy_net, n_actions, config)
+    #         _, reward, done, _, _ = env.step(action.item())
             
-            running_sum += reward
-            counter += 1
-            mean = running_sum / counter
+    #         running_sum += reward
+    #         counter += 1
+    #         mean = running_sum / counter
 
-            reward = torch.tensor([reward], device=device)
+    #         reward = torch.tensor([reward], device=device)
             
-            if not done:
-                next_state = get_screen(env)
-            else:
-                next_state = None
+    #         if not done:
+    #             next_state = get_screen(env)
+    #         else:
+    #             next_state = None
 
-            # Store the transition in memory
-            memory.push(state, action, next_state, reward)
+    #         # Store the transition in memory
+    #         memory.push(state, action, next_state, reward)
 
-            # Move to the next state
-            state = next_state
+    #         # Move to the next state
+    #         state = next_state
 
-            # Perform one step of the optimization 
-            log.log_message("\nEpoch %s"%str(epoch))
-            # Freeze (part of) network for some epochs if indicated in args
-            freeze(policy_net, epoch, params_to_freeze, params_to_train, args, log)
-            log_learning_rates(optimizer, args, log)
-            train_info = train_epoch(policy_net, trainloader, optimizer, epoch, args.disable_derivative_free_leaf_optim, device, log, log_prefix)
+    #         # Perform one step of the optimization 
+    #         log.log_message("\nEpoch %s"%str(epoch))
+    #         # Freeze (part of) network for some epochs if indicated in args
+    #         freeze(policy_net, epoch, params_to_freeze, params_to_train, args, log)
+    #         log_learning_rates(optimizer, args, log)
+    #         train_info = train_epoch(policy_net, target_net, trainloader, optimizer, epoch, args.disable_derivative_free_leaf_optim, device, log, log_prefix)
 
-            # if agent did not reach target after RESET_ENV_FREQ actions, reset environment
-            if (t + 1) % config.get("RESET_ENV_FREQ") == 0:
-                done = True
+    #         # if agent did not reach target after RESET_ENV_FREQ actions, reset environment
+    #         if (t + 1) % config.get("RESET_ENV_FREQ") == 0:
+    #             done = True
 
-            if done:
-                if reward == 1000:
-                    spel_gelukt = 1
-                    win_count += 1
+    #         if done:
+    #             if reward == 1000:
+    #                 spel_gelukt = 1
+    #                 win_count += 1
 
-                log_dict = {
-                    "episode": epoch + 1,
-                    "reached_target": spel_gelukt
-                }
-                wandb.log(log_dict)
-                wandb.log({"number_of_actions_in_episode": t})
-                wandb.log({"win_count": win_count})
-                wandb.log({"mean_reward": mean})
-                break
+    #             log_dict = {
+    #                 "episode": epoch + 1,
+    #                 "reached_target": spel_gelukt
+    #             }
+    #             wandb.log(log_dict)
+    #             wandb.log({"number_of_actions_in_episode": t})
+    #             wandb.log({"win_count": win_count})
+    #             wandb.log({"mean_reward": mean})
+    #             break
             
 
-        # Update the target network, copying all weights and biases to target DQN
-        if epoch % config.get("TARGET_UPDATE") == 0:
-            target_net = deepcopy(policy_net)
+    #     # Update the target network, copying all weights and biases to target DQN
+    #     if epoch % config.get("TARGET_UPDATE") == 0:
+    #         target_net = deepcopy(policy_net)
         
-        # save model after frequency
-        # if epoch % config.get("SAVE_FREQ") == 0:
-        #     torch.save(policy_net, config.get("MODEL_dir_file") + str(epoch) + '.pkl')
+    #     # save model after frequency
+    #     # if epoch % config.get("SAVE_FREQ") == 0:
+    #     #     torch.save(policy_net, config.get("MODEL_dir_file") + str(epoch) + '.pkl')
 
-    print('Complete')
-    env.render()
-    env.close()
+    # print('Complete')
+    # env.render()
+    # env.close()
 
 
     

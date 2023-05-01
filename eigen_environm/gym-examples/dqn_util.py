@@ -27,6 +27,7 @@ import torch.utils.data
 import torchvision
 import torchvision.transforms as transforms
 from torchvision.transforms import ToTensor, Normalize, Compose, Lambda
+from torch.utils.data import TensorDataset, DataLoader
 
 resize = T.Compose([T.ToPILImage(),T.Resize(198, interpolation=Image.CUBIC),T.ToTensor()])
 Transition = namedtuple('Transition', ('state', 'action', 'next_state', 'reward'))
@@ -125,12 +126,12 @@ def get_batch(memory, config):
 
 
 
-def get_dataloaders_dqn(args):
+def get_dataloaders_dqn(args, state_batch):
     """
     Get data loaders
     """
     # Obtain the dataset
-    trainset, projectset, testset, classes, shape = get_data_dqn(args)
+    trainset, projectset, testset, shape = get_data_dqn(state_batch)
     c, w, h = shape
     # Determine if GPU should be used
     cuda = not args.disable_cuda and torch.cuda.is_available()
@@ -156,11 +157,12 @@ def get_dataloaders_dqn(args):
                                              pin_memory=cuda,
                                              num_workers=1
                                              )
+    classes = ['down', 'left', 'right', 'up']
     print("Num classes (k) = ", len(classes), flush=True)
     return trainloader, projectloader, testloader, classes, c
 
 
-def get_data_dqn(augment: bool, train_dir: str, project_dir: str, test_dir: str, img_size=40):
+def get_data_dqn(state_batch, img_size=198):
     """
     Load the proper dataset based on the parsed arguments
     :param args: The arguments in which is specified which dataset should be used
@@ -172,20 +174,12 @@ def get_data_dqn(augment: bool, train_dir: str, project_dir: str, test_dir: str,
                 - a tuple containing the shape (depth, width, height) of the input images
     """
 
-    transform = transforms.Compose([
-
-        transforms.ToTensor(),
-
-    ])
-
     shape = (3, img_size, img_size)
-    trainset = torchvision.datasets.ImageFolder(train_dir, transform=transform)
-    projectset = torchvision.datasets.ImageFolder(
-        project_dir, transform=transform)
-    testset = torchvision.datasets.ImageFolder(test_dir, transform=transform)
-    classes = trainset.classes
+    trainset = TensorDataset(state_batch)
+    projectset = TensorDataset(state_batch)
+    testset = TensorDataset(state_batch)
 
-    return trainset, projectset, testset, classes, shape
+    return trainset, projectset, testset, shape
 
 
 
