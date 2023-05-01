@@ -156,7 +156,7 @@ class ProtoTree(nn.Module):
 
         # Perform a forward pass through the tree
         out, attr = self._root.forward(xs, **kwargs)
-        import ipdb; ipdb.set_trace()
+        
         info = dict()
         # Store the probability of arriving at all nodes in the decision tree
         info['pa_tensor'] = {n.index: attr[n, 'pa'].unsqueeze(1) for n in self.nodes}

@@ -111,8 +111,23 @@ if __name__ == '__main__':
     Train the tree
     """
 
+    config =  {
+    "BATCH_SIZE":64,
+    "GAMMA" : 0.999,
+    "EPS_START": 1,
+    "EPS_END" : 0.1,
+    "lr":0.0001, 
+    "REPLAY_BUFFER":10000,
+    "EPISODES": 100000,
+    "TARGET_UPDATE": 200,
+    "SAVE_FREQ": 10,
+    "RESET_ENV_FREQ": 200,
+    "DDQN": True,
+    "MODEL_dir_file": "./model/stop_border_lagere_lr",
+    }
+
     # in algoritme
-    # memory = ReplayMemory(config.get("REPLAY_BUFFER"))
+    memory = ReplayMemory(config.get("REPLAY_BUFFER"))
     # get_batch(memory, config)
 
     # om te testen
@@ -121,25 +136,12 @@ if __name__ == '__main__':
 
     next_state_batch = get_screen(env)
     next_state_batch = next_state_batch.repeat(64, 1, 1, 1)
-    train_info = train_epoch(policy_net, target_net, state_batch, next_state_batch, optimizer, epoch, args.disable_derivative_free_leaf_optim, device, log, log_prefix)
+    train_info = train_epoch(config, memory, policy_net, target_net, state_batch, next_state_batch, optimizer, epoch, args.disable_derivative_free_leaf_optim, device, log, log_prefix)
 
 
 
 
-    # config =  {
-    # "BATCH_SIZE":64,
-    # "GAMMA" : 0.999,
-    # "EPS_START": 1,
-    # "EPS_END" : 0.1,
-    # "lr":0.0001, 
-    # "REPLAY_BUFFER":10000,
-    # "EPISODES": 100000,
-    # "TARGET_UPDATE": 200,
-    # "SAVE_FREQ": 10,
-    # "RESET_ENV_FREQ": 200,
-    # "DDQN": True,
-    # "MODEL_dir_file": "./model/stop_border_lagere_lr",
-    # }
+
 
     # # Define the custom x axis metric
     # wandb.define_metric("episode")

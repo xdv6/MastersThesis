@@ -6,12 +6,14 @@ import torch.nn.functional as F
 import torch.optim
 import torch.utils.data
 from torch.utils.data import DataLoader
-
+from dqn_util import *
 from prototree.prototree import ProtoTree
 
 from util.log import Log
 
-def train_epoch(policy_net: ProtoTree,
+def train_epoch(config: dict,
+                memory: ReplayMemory,
+                policy_net: ProtoTree,
                 target_net: ProtoTree,
                 state_batch: torch.Tensor,
                 next_state_batch: torch.Tensor,
@@ -56,19 +58,26 @@ def train_epoch(policy_net: ProtoTree,
 
     # Perform a forward pass through the policy network
     ys_pred, info = policy_net.forward(xs)
+    # compute the Q-estimate 
+    action_batch = torch.zeros(64, dtype=torch.int64).unsqueeze(dim=1).to(device)
+    state_action_values = ys_pred.gather(1, action_batch)
 
     # Perform a forward pass through the target network
     with torch.no_grad():
         ys_target, _ = target_net.forward(ys)
+        # compute the Q-target
+        next_state_values = torch.zeros( xs.shape[0], device=device)
+        # pas aan met mask
+        next_state_values = ys_target.max(1)[0]
 
-    import ipdb; ipdb.set_trace()
+    expected_state_action_values = ((next_state_values * config.get("GAMMA") + reward_batch).unsqueeze(1))
+    
+
     # Learn prototypes and network with gradient descent. 
     # If disable_derivative_free_leaf_optim, leaves are optimized with gradient descent as well.
     # Compute the loss
-    if policy_net._log_probabilities:
-        loss = F.nll_loss(ys_pred, ys)
-    else:
-        loss = F.nll_loss(torch.log(ys_pred), ys)
+
+    loss = F.smooth_l1_loss(state_action_values, expected_state_action_values)
     
     # Compute the gradient
     loss.backward()
