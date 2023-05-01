@@ -126,7 +126,7 @@ if __name__ == '__main__':
     "EPS_END" : 0.1,
     "lr":0.0001, 
     "REPLAY_BUFFER":10000,
-    "EPISODES": 1,
+    "EPISODES": 50,
     "TARGET_UPDATE": 200,
     "SAVE_FREQ": 10,
     "RESET_ENV_FREQ": 200,
@@ -231,11 +231,6 @@ if __name__ == '__main__':
     name = "pruned"
     save_tree_description(policy_net, optimizer, scheduler, name, log)
     pruned_tree = deepcopy(policy_net)
-    # Analyse and evaluate pruned policy_net
-    leaf_labels = analyse_leafs(policy_net, epoch+2, n_actions, leaf_labels, args.pruning_threshold_leaves, log)
-    analyse_leaf_distributions(policy_net, log)
-
-
     pruned_tree = policy_net
 
     # '''
