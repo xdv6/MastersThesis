@@ -48,7 +48,7 @@ def train_epoch(tree: ProtoTree,
     # Iterate through the data set to update leaves, prototypes and network
     for i, (xs, ys) in train_iter:
         # Make sure the model is in train mode
-        import ipdb; ipdb.set_trace()
+        
         tree.train()
         # Reset the gradients
         optimizer.zero_grad()
@@ -57,7 +57,7 @@ def train_epoch(tree: ProtoTree,
 
         # Perform a forward pass through the network
         ys_pred, info = tree.forward(xs)
-
+        # import ipdb; ipdb.set_trace()
         # Learn prototypes and network with gradient descent. 
         # If disable_derivative_free_leaf_optim, leaves are optimized with gradient descent as well.
         # Compute the loss

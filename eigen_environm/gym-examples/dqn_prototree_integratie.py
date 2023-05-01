@@ -106,16 +106,25 @@ if __name__ == '__main__':
     best_train_acc = 0.
     best_test_acc = 0.
 
-    trainloader, projectloader, testloader, classes, num_channels = get_dataloaders_dqn(args, example_screen)
-
-    dataiter = iter(trainloader)
-    images, labels  = next(dataiter)
-    print(images)
-    # train_info = train_epoch(policy_net, target_net, trainloader, optimizer, epoch, args.disable_derivative_free_leaf_optim, device, log, log_prefix)
 
     """
     Train the tree
     """
+
+    # in algoritme
+    # memory = ReplayMemory(config.get("REPLAY_BUFFER"))
+    # get_batch(memory, config)
+
+    # om te testen
+    state_batch = get_screen(env)
+    state_batch = state_batch.repeat(64, 1, 1, 1)
+
+    next_state_batch = get_screen(env)
+    next_state_batch = next_state_batch.repeat(64, 1, 1, 1)
+    train_info = train_epoch(policy_net, target_net, state_batch, next_state_batch, optimizer, epoch, args.disable_derivative_free_leaf_optim, device, log, log_prefix)
+
+
+
 
     # config =  {
     # "BATCH_SIZE":64,

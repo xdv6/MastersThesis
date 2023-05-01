@@ -13,7 +13,8 @@ from util.log import Log
 
 def train_epoch(policy_net: ProtoTree,
                 target_net: ProtoTree,
-                train_loader: DataLoader,
+                state_batch: torch.Tensor,
+                next_state_batch: torch.Tensor,
                 optimizer: torch.optim.Optimizer,
                 epoch: int,
                 disable_derivative_free_leaf_optim: bool,
@@ -33,7 +34,8 @@ def train_epoch(policy_net: ProtoTree,
     # Create a log if required
     log_loss = f'{log_prefix}_losses'
 
-    nr_batches = float(len(train_loader))
+    nr_batches = 1
+
     with torch.no_grad():
         _old_dist_params = dict()
         for leaf in policy_net.leaves:
@@ -41,76 +43,76 @@ def train_epoch(policy_net: ProtoTree,
         # Optimize class distributions in leafs
         eye = torch.eye(policy_net._num_classes).to(device)
 
-    # Show progress on progress bar
-    train_iter = tqdm(enumerate(train_loader),
-                    total=len(train_loader),
-                    desc=progress_prefix+' %s'%epoch,
-                    ncols=0)
     # Iterate through the data set to update leaves, prototypes and network
-    for i, (xs, ys) in train_iter:
-        # Make sure the model is in train mode
-        import ipdb; ipdb.set_trace()
-        policy_net.train()
-        # Reset the gradients
-        optimizer.zero_grad()
+    
+    xs = state_batch
+    ys = next_state_batch
+    # Make sure the model is in train mode
+    policy_net.train()
+    # Reset the gradients
+    optimizer.zero_grad()
 
-        xs, ys = xs.to(device), ys.to(device)
+    xs, ys = xs.to(device), ys.to(device)
 
-        # Perform a forward pass through the network
-        ys_pred, info = policy_net.forward(xs)
+    # Perform a forward pass through the policy network
+    ys_pred, info = policy_net.forward(xs)
 
-        # Learn prototypes and network with gradient descent. 
-        # If disable_derivative_free_leaf_optim, leaves are optimized with gradient descent as well.
-        # Compute the loss
-        if policy_net._log_probabilities:
-            loss = F.nll_loss(ys_pred, ys)
-        else:
-            loss = F.nll_loss(torch.log(ys_pred), ys)
-        
-        # Compute the gradient
-        loss.backward()
-        # Update model parameters
-        optimizer.step()
-        
-        if not disable_derivative_free_leaf_optim:
-            #Update leaves with derivate-free algorithm
-            #Make sure the policy_net is in eval mode
-            policy_net.eval()
-            with torch.no_grad():
-                target = eye[ys] #shape (batchsize, num_classes) 
-                for leaf in policy_net.leaves:  
-                    if policy_net._log_probabilities:
-                        # log version
-                        update = torch.exp(torch.logsumexp(info['pa_tensor'][leaf.index] + leaf.distribution() + torch.log(target) - ys_pred, dim=0))
-                    else:
-                        update = torch.sum((info['pa_tensor'][leaf.index] * leaf.distribution() * target)/ys_pred, dim=0)  
-                    leaf._dist_params -= (_old_dist_params[leaf]/nr_batches)
-                    F.relu_(leaf._dist_params) #dist_params values can get slightly negative because of floating point issues. therefore, set to zero.
-                    leaf._dist_params += update
+    # Perform a forward pass through the target network
+    with torch.no_grad():
+        ys_target, _ = target_net.forward(ys)
 
-        # Count the number of correct classifications
-        ys_pred_max = torch.argmax(ys_pred, dim=1)
-        
-        correct = torch.sum(torch.eq(ys_pred_max, ys))
-        acc = correct.item() / float(len(xs))
+    import ipdb; ipdb.set_trace()
+    # Learn prototypes and network with gradient descent. 
+    # If disable_derivative_free_leaf_optim, leaves are optimized with gradient descent as well.
+    # Compute the loss
+    if policy_net._log_probabilities:
+        loss = F.nll_loss(ys_pred, ys)
+    else:
+        loss = F.nll_loss(torch.log(ys_pred), ys)
+    
+    # Compute the gradient
+    loss.backward()
+    # Update model parameters
+    optimizer.step()
+    
+    if not disable_derivative_free_leaf_optim:
+        #Update leaves with derivate-free algorithm
+        #Make sure the policy_net is in eval mode
+        policy_net.eval()
+        with torch.no_grad():
+            target = eye[ys] #shape (batchsize, num_classes) 
+            for leaf in policy_net.leaves:  
+                if policy_net._log_probabilities:
+                    # log version
+                    update = torch.exp(torch.logsumexp(info['pa_tensor'][leaf.index] + leaf.distribution() + torch.log(target) - ys_pred, dim=0))
+                else:
+                    update = torch.sum((info['pa_tensor'][leaf.index] * leaf.distribution() * target)/ys_pred, dim=0)  
+                leaf._dist_params -= (_old_dist_params[leaf]/nr_batches)
+                F.relu_(leaf._dist_params) #dist_params values can get slightly negative because of floating point issues. therefore, set to zero.
+                leaf._dist_params += update
 
-        train_iter.set_postfix_str(
-            f'Batch [{i + 1}/{len(train_loader)}], Loss: {loss.item():.3f}, Acc: {acc:.3f}'
-        )
-        # Compute metrics over this batch
-        total_loss+=loss.item()
-        total_acc+=acc
+    # Count the number of correct classifications
+    ys_pred_max = torch.argmax(ys_pred, dim=1)
+    
+    correct = torch.sum(torch.eq(ys_pred_max, ys))
+    acc = correct.item() / float(len(xs))
 
-        if log is not None:
-            log.log_values(log_loss, epoch, i + 1, loss.item(), acc)
+    print(f' Loss: {loss.item():.3f}, Acc: {acc:.3f}')
+    
+    # Compute metrics over this batch
+    total_loss+=loss.item()
+    total_acc+=acc
 
-    train_info['loss'] = total_loss/float(i+1)
-    train_info['train_accuracy'] = total_acc/float(i+1)
+    if log is not None:
+        log.log_values(log_loss, epoch, 1, loss.item(), acc)
+
+    train_info['loss'] = total_loss/float(1)
+    train_info['train_accuracy'] = total_acc/float(1)
     return train_info 
 
 
 def train_epoch_kontschieder(policy_net: ProtoTree,
-                t: DataLoader,
+                train_loader: DataLoader,
                 optimizer: torch.optim.Optimizer,
                 epoch: int,
                 disable_derivative_free_leaf_optim: bool,
@@ -149,10 +151,10 @@ def train_epoch_kontschieder(policy_net: ProtoTree,
     # Train prototypes and network. 
     # If disable_derivative_free_leaf_optim, leafs are optimized with gradient descent as well.
     # Show progress on progress bar
-    train_iter = tqdm(enumerate(train_loader),
-                        total=len(train_loader),
-                        desc=progress_prefix+' %s'%epoch,
-                        ncols=0)
+    # train_iter = tqdm(enumerate(train_loader),
+    #                     total=len(train_loader),
+    #                     desc=progress_prefix+' %s'%epoch,
+    #                     ncols=0)
     # Make sure the model is in train mode
     policy_net.train()
     for i, (xs, ys) in train_iter:
@@ -211,10 +213,10 @@ def train_leaves_epoch(policy_net: ProtoTree,
         eye = torch.eye(policy_net._num_classes).to(device)
 
         # Show progress on progress bar
-        train_iter = tqdm(enumerate(train_loader),
-                        total=len(train_loader),
-                        desc=progress_prefix+' %s'%epoch,
-                        ncols=0)
+        # train_iter = tqdm(enumerate(train_loader),
+        #                 total=len(train_loader),
+        #                 desc=progress_prefix+' %s'%epoch,
+        #                 ncols=0)
         
         
         # Iterate through the data set

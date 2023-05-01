@@ -156,7 +156,7 @@ class ProtoTree(nn.Module):
 
         # Perform a forward pass through the tree
         out, attr = self._root.forward(xs, **kwargs)
-
+        import ipdb; ipdb.set_trace()
         info = dict()
         # Store the probability of arriving at all nodes in the decision tree
         info['pa_tensor'] = {n.index: attr[n, 'pa'].unsqueeze(1) for n in self.nodes}
@@ -175,6 +175,7 @@ class ProtoTree(nn.Module):
             pas = [attr[l, 'pa'].view(batch_size, 1) for l in leaves]  # All shaped (bs, 1)
             # Obtain output distributions of each leaf
             dss = [attr[l, 'ds'].view(batch_size, 1, self._num_classes) for l in leaves]  # All shaped (bs, 1, k)
+            
             # Prepare data for selection of most probable distributions
             # Let L denote the number of leaves in this tree
             pas = torch.cat(tuple(pas), dim=1)  # shape: (bs, L)
