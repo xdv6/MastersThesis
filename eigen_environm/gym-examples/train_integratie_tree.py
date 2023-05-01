@@ -110,7 +110,7 @@ def train_epoch(policy_net: ProtoTree,
 
 
 def train_epoch_kontschieder(policy_net: ProtoTree,
-                train_loader: DataLoader,
+                t: DataLoader,
                 optimizer: torch.optim.Optimizer,
                 epoch: int,
                 disable_derivative_free_leaf_optim: bool,

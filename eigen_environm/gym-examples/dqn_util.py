@@ -138,7 +138,7 @@ def get_dataloaders_dqn(args, state_batch):
     trainloader = torch.utils.data.DataLoader(trainset,
                                               batch_size=args.batch_size,
                                               shuffle=True,
-                                              pin_memory=cuda,
+                                            #   pin_memory=cuda,
                                               num_workers=1
                                               )
     projectloader = torch.utils.data.DataLoader(projectset,
@@ -148,13 +148,13 @@ def get_dataloaders_dqn(args, state_batch):
                                                 #   args.batch_size/4),
                                                 batch_size = args.batch_size,
                                                 shuffle=False,
-                                                pin_memory=cuda,
+                                                # pin_memory=cuda,
                                                 num_workers=1
                                                 )
     testloader = torch.utils.data.DataLoader(testset,
                                              batch_size=args.batch_size,
                                              shuffle=False,
-                                             pin_memory=cuda,
+                                            #  pin_memory=cuda,
                                              num_workers=1
                                              )
     classes = ['down', 'left', 'right', 'up']
@@ -173,11 +173,13 @@ def get_data_dqn(state_batch, img_size=198):
                 - a tuple containing all possible class labels
                 - a tuple containing the shape (depth, width, height) of the input images
     """
-
+    print(state_batch.shape)
+    # Generate a placeholder tensor for the labels
+    dummy_labels = torch.zeros(state_batch.shape[0]).long()
     shape = (3, img_size, img_size)
-    trainset = TensorDataset(state_batch)
-    projectset = TensorDataset(state_batch)
-    testset = TensorDataset(state_batch)
+    trainset = TensorDataset(state_batch.float(), dummy_labels.float())
+    projectset = TensorDataset(state_batch.float(), dummy_labels.float())
+    testset = TensorDataset(state_batch.float(), dummy_labels.float())
 
     return trainset, projectset, testset, shape
 
