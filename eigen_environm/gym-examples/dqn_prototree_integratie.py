@@ -126,7 +126,7 @@ if __name__ == '__main__':
     "EPS_END" : 0.1,
     "lr":0.0001, 
     "REPLAY_BUFFER":10000,
-    "EPISODES": 100,
+    "EPISODES": 1,
     "TARGET_UPDATE": 200,
     "SAVE_FREQ": 10,
     "RESET_ENV_FREQ": 200,
@@ -222,6 +222,46 @@ if __name__ == '__main__':
     print('Complete')
     env.render()
     env.close()
+
+
+    '''
+    PRUNE
+    '''
+    pruned = prune(policy_net, args.pruning_threshold_leaves, log)
+    name = "pruned"
+    save_tree_description(policy_net, optimizer, scheduler, name, log)
+    pruned_tree = deepcopy(policy_net)
+    # Analyse and evaluate pruned policy_net
+    leaf_labels = analyse_leafs(policy_net, epoch+2, n_actions, leaf_labels, args.pruning_threshold_leaves, log)
+    analyse_leaf_distributions(policy_net, log)
+
+
+    pruned_tree = policy_net
+
+    # '''
+    # PROJECT
+    # '''
+    # project_info, policy_net = project_with_class_constraints(deepcopy(pruned_tree), projectloader, device, args, log)
+    # name = "pruned_and_projected"
+    # save_tree_description(policy_net, optimizer, scheduler, name, log)
+    # pruned_projected_tree = deepcopy(policy_net)
+    # # Analyse and evaluate pruned policy_net with projected prototypes
+    # average_distance_nearest_image(project_info, policy_net, log)
+    # leaf_labels = analyse_leafs(policy_net, epoch+3, n_actions, leaf_labels, args.pruning_threshold_leaves, log)
+    # analyse_leaf_distributions(policy_net, log)
+    # eval_info = eval(policy_net, testloader, name, device, log)
+    # pruned_projected_test_acc = eval_info['test_accuracy']
+    # eval_info_samplemax = eval(policy_net, testloader, name, device, log, 'sample_max')
+    # get_avg_path_length(policy_net, eval_info_samplemax, log)
+    # eval_info_greedy = eval(policy_net, testloader, name, device, log, 'greedy')
+    # get_avg_path_length(policy_net, eval_info_greedy, log)
+    # fidelity_info = eval_fidelity(policy_net, testloader, device, log)
+
+    # # Upsample prototype for visualization
+    # project_info = upsample(policy_net, project_info, projectloader, name, args, log)
+    
+    # # visualize policy_net
+    # gen_vis(policy_net, name, args, classes)
 
 
     
