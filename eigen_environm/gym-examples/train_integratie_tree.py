@@ -22,7 +22,7 @@ import torchvision.transforms as transforms
 from util.log import Log
 
 from util.log import Log
-
+import wandb
 
 # Create a transformation to convert the tensor to a PIL Image
 transform = transforms.ToPILImage()
@@ -247,7 +247,8 @@ def train_epoch(config: dict,
                 F.relu_(leaf._dist_params) #dist_params values can get slightly negative because of floating point issues. therefore, set to zero.
                 leaf._dist_params += update
 
-    print(f' Loss: {loss.item():.3f}')
+    # print(f' Loss: {loss.item():.3f}')
+    wandb.log({"loss": loss})
     
     # Compute metrics over this batch
     total_loss+=loss.item()
