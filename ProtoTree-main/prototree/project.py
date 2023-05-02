@@ -152,7 +152,6 @@ def project_with_class_constraints(tree: ProtoTree,
         
         for i, (xs, ys) in projection_iter:
             xs, ys = xs.to(device), ys.to(device)
-            import ipdb; ipdb.set_trace()
             # Get the features and distances
             # - features_batch: features tensor (shared by all prototypes)
             #   shape: (batch_size, D, W, H)

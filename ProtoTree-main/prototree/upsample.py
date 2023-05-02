@@ -18,7 +18,9 @@ def upsample(tree: ProtoTree, project_info: dict, project_loader: DataLoader, fo
     with torch.no_grad():
         sim_maps, project_info = get_similarity_maps(tree, project_info, log)
         log.log_message("\nUpsampling prototypes for visualization...")
+        # paden naar images
         imgs = project_loader.dataset.imgs
+        
         for node, j in tree._out_map.items():
             if node in tree.branches: #do not upsample when node is pruned
                 prototype_info = project_info[j]

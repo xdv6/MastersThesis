@@ -20,7 +20,7 @@ from prototree.prune import prune
 from prototree.project import project, project_with_class_constraints
 from prototree.upsample import upsample
 
-from train_integratie_tree import train_epoch, project_dqn_tree
+from train_integratie_tree import train_epoch, project_dqn_tree, upsample_with_dqn
 import torch
 from shutil import copy
 from copy import deepcopy
@@ -240,14 +240,14 @@ if __name__ == '__main__':
     print(project_info)
 
 
-    # name = "pruned_and_projected"
-    # save_tree_description(policy_net, optimizer, scheduler, name, log)
-    # pruned_projected_tree = deepcopy(policy_net)
+    name = "pruned_and_projected"
+    save_tree_description(policy_net, optimizer, scheduler, name, log)
+    pruned_projected_tree = deepcopy(policy_net)
 
-    # # Upsample prototype for visualization
-    # project_info = upsample(policy_net, project_info, projectloader, name, args, log)
-    
-    # # visualize policy_net
+    # Upsample prototype for visualization
+    project_info = upsample_with_dqn(policy_net, project_info, memory, name, args, log)
+    import ipdb; ipdb.set_trace()
+    # visualize policy_net
     # gen_vis(policy_net, name, args, classes)
 
 
