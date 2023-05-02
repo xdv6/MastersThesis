@@ -41,11 +41,11 @@ if __name__ == '__main__':
     "EPS_END" : 0.1,
     "lr":0.0001, 
     # multiple of 64
-    "REPLAY_BUFFER":960,
-    "EPISODES": 100,
+    "REPLAY_BUFFER":128,
+    "EPISODES": 1,
     "TARGET_UPDATE": 20,
     "SAVE_FREQ": 10,
-    "RESET_ENV_FREQ": 200,
+    "RESET_ENV_FREQ": 150,
     "DDQN": False,
     "MODEL_dir_file": "./model/stop_border_lagere_lr",
     }
@@ -191,7 +191,7 @@ if __name__ == '__main__':
             """
             if len(memory) > config.get("BATCH_SIZE"):
                 # Perform one step of the optimization 
-                log.log_message("\nEpoch %s"%str(epoch))
+                log.log_message(f"\nEpoch {str(epoch)} - Step {str(t)}")
                 # Freeze (part of) network for some epochs if indicated in args
                 freeze(policy_net, epoch, params_to_freeze, params_to_train, args, log)
                 log_learning_rates(optimizer, args, log)
@@ -217,6 +217,7 @@ if __name__ == '__main__':
                 wandb.log({"number_of_actions_in_episode": t})
                 wandb.log({"win_count": win_count})
                 wandb.log({"mean_reward": mean})
+                wandb.log({"buffer_size": len(memory)})
                 break
             
 
@@ -246,7 +247,7 @@ if __name__ == '__main__':
     PROJECT
     '''
     project_info, policy_net = project_dqn_tree(config, memory, deepcopy(pruned_tree), device, args, log)
-    # print(project_info)
+    print(project_info)
 
 
     name = "pruned_and_projected"

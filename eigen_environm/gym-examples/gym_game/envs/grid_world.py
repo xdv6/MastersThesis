@@ -165,7 +165,7 @@ class GridWorldEnv(gym.Env):
             info = self._get_info()
             self.is_dead = False
             reward = 0
-            return observation, reward, True, False, info
+            return observation, reward, False, False, info
         
         observation = self._get_obs()
         info = self._get_info()
