@@ -73,8 +73,9 @@ if __name__ == '__main__':
     n_actions = env.action_space.n
     
 
-    # example of screen
     example_screen = get_screen(env)
+
+    # example of screen
     # print(example_screen.shape)
     # plt.figure()
     # plt.axis('off')
@@ -237,7 +238,7 @@ if __name__ == '__main__':
     PROJECT
     '''
     project_info, policy_net = project_dqn_tree(config, memory, deepcopy(pruned_tree), device, args, log)
-    print(project_info)
+    # print(project_info)
 
 
     name = "pruned_and_projected"
@@ -248,7 +249,8 @@ if __name__ == '__main__':
     project_info = upsample_with_dqn(policy_net, project_info, memory, name, args, log)
     import ipdb; ipdb.set_trace()
     # visualize policy_net
-    # gen_vis(policy_net, name, args, classes)
+    classes = ['down', 'left', 'right', 'up']
+    gen_vis(policy_net, name, args, classes)
 
 
     
