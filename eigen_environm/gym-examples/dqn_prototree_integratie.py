@@ -30,7 +30,7 @@ from dqn_util import *
 
 
 if __name__ == '__main__':
-    
+
     """
     initialize wandb
     """
@@ -49,7 +49,7 @@ if __name__ == '__main__':
     "DDQN": False,
     "MODEL_dir_file": "./model/stop_border_lagere_lr",
     }
-    run = wandb.init(project="test_buffer_size", entity="xdvisch", config=config)
+    run = wandb.init(project="test_dqn_tree", entity="xdvisch", config=config)
 
     """
     setup Prototree logging variables
