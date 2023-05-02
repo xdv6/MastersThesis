@@ -20,7 +20,7 @@ from prototree.prune import prune
 from prototree.project import project, project_with_class_constraints
 from prototree.upsample import upsample
 
-from train_integratie_tree import train_epoch, train_leaves_epoch
+from train_integratie_tree import train_epoch, project_dqn_tree
 import torch
 from shutil import copy
 from copy import deepcopy
@@ -125,8 +125,8 @@ if __name__ == '__main__':
     "EPS_START": 1,
     "EPS_END" : 0.1,
     "lr":0.0001, 
-    "REPLAY_BUFFER":10000,
-    "EPISODES": 50,
+    "REPLAY_BUFFER":128,
+    "EPISODES": 100,
     "TARGET_UPDATE": 200,
     "SAVE_FREQ": 10,
     "RESET_ENV_FREQ": 200,
@@ -236,16 +236,19 @@ if __name__ == '__main__':
     '''
     PROJECT
     '''
-    project_info, policy_net = project_with_class_constraints(deepcopy(pruned_tree), projectloader, device, args, log)
-    name = "pruned_and_projected"
-    save_tree_description(policy_net, optimizer, scheduler, name, log)
-    pruned_projected_tree = deepcopy(policy_net)
+    project_info, policy_net = project_dqn_tree(config, memory, deepcopy(pruned_tree), device, args, log)
+    print(project_info)
 
-    # Upsample prototype for visualization
-    project_info = upsample(policy_net, project_info, projectloader, name, args, log)
+
+    # name = "pruned_and_projected"
+    # save_tree_description(policy_net, optimizer, scheduler, name, log)
+    # pruned_projected_tree = deepcopy(policy_net)
+
+    # # Upsample prototype for visualization
+    # project_info = upsample(policy_net, project_info, projectloader, name, args, log)
     
-    # visualize policy_net
-    gen_vis(policy_net, name, args, classes)
+    # # visualize policy_net
+    # gen_vis(policy_net, name, args, classes)
 
 
     
