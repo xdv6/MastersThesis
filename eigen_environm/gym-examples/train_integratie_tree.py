@@ -456,3 +456,38 @@ def get_similarity_maps(tree: ProtoTree, project_info: dict, log: Log = None):
         del nearest_x
         del project_info[j]['nearest_input']
     return sim_maps, project_info
+
+
+# copied from protopnet
+def find_high_activation_crop(mask,threshold):
+    threshold = 1.-threshold
+    lower_y, upper_y, lower_x, upper_x = 0, 0, 0, 0
+    for i in range(mask.shape[0]):
+        if np.amax(mask[i]) > threshold:
+            lower_y = i
+            break
+    for i in reversed(range(mask.shape[0])):
+        if np.amax(mask[i]) > threshold:
+            upper_y = i
+            break
+    for j in range(mask.shape[1]):
+        if np.amax(mask[:,j]) > threshold:
+            lower_x = j
+            break
+    for j in reversed(range(mask.shape[1])):
+        if np.amax(mask[:,j]) > threshold:
+            upper_x = j
+            break
+    return lower_y, upper_y+1, lower_x, upper_x+1
+
+# copied from protopnet
+def imsave_with_bbox(fname, img_rgb, bbox_height_start, bbox_height_end,
+                     bbox_width_start, bbox_width_end, color=(0, 255, 255)):
+    img_bgr_uint8 = cv2.cvtColor(np.uint8(255*img_rgb), cv2.COLOR_RGB2BGR)
+    cv2.rectangle(img_bgr_uint8, (bbox_width_start, bbox_height_start), (bbox_width_end-1, bbox_height_end-1),
+                  color, thickness=2)
+    img_rgb_uint8 = img_bgr_uint8[...,::-1]
+    img_rgb_float = np.float32(img_rgb_uint8) / 255
+    plt.imshow(img_rgb_float)
+    #plt.axis('off')
+    plt.imsave(fname, img_rgb_float)
