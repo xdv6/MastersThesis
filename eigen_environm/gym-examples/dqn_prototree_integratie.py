@@ -247,7 +247,6 @@ if __name__ == '__main__':
 
     # Upsample prototype for visualization
     project_info = upsample_with_dqn(policy_net, project_info, memory, name, args, log)
-    import ipdb; ipdb.set_trace()
     # visualize policy_net
     classes = ['down', 'left', 'right', 'up']
     gen_vis(policy_net, name, args, classes)
