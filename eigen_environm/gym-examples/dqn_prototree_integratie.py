@@ -42,7 +42,7 @@ if __name__ == '__main__':
     "EPS_END" : 0.1,
     "lr":0.0001, 
     # multiple of 64
-    "REPLAY_BUFFER":64,
+    "REPLAY_BUFFER":960,
     "EPISODES": 1,
     "TARGET_UPDATE": 25,
     "SAVE_FREQ": 10,

@@ -16,3 +16,8 @@ atari_boxing/model/
 atari_boxing/wandb/
 
 **/__pycache__/
+
+**/pretrained_models/
+**/runs/
+
+**/secret.txt
