@@ -46,7 +46,7 @@ if __name__ == '__main__':
     "EPISODES": 1,
     "TARGET_UPDATE": 25,
     "SAVE_FREQ": 10,
-    "RESET_ENV_FREQ": 70,
+    "RESET_ENV_FREQ": 200,
     "MODEL_dir_file": "./model/stop_border_lagere_lr",
     }
     run = wandb.init(project="test_dqn_tree", entity="xdvisch", config=config)

@@ -165,7 +165,6 @@ def project_dqn_tree(config: dict,
     
     with torch.no_grad():
         for i in range(0, config.get("REPLAY_BUFFER") - config.get("BATCH_SIZE") + 1, config.get("BATCH_SIZE")):
-            # import ipdb; ipdb.set_trace()
             all_memory = memory.memory[i:i+config.get("BATCH_SIZE")]
             state_list = [transition.state for transition in all_memory]
             state_tensor = torch.squeeze(torch.stack(state_list), dim=1)
