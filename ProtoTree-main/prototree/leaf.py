@@ -72,7 +72,7 @@ class Leaf(Node):
                 # Return numerically stable softmax (see http://www.deeplearningbook.org/contents/numerical.html)
                 
                 # return F.softmax(self._dist_params - torch.max(self._dist_params), dim=0)
-                import ipdb; ipdb.set_trace()
+                # import ipdb; ipdb.set_trace()
                 return self._dist_params
         
         else:

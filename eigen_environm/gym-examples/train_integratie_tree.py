@@ -210,7 +210,7 @@ def project_dqn_tree(config: dict,
                         global_min_proto_dist[j] = min_distance
                         global_min_patches[j] = closest_patch
                         global_min_info[j] = {
-                            'input_image_ix': i * config.get("BATCH_SIZE") + batch_i,
+                            'input_image_ix': i + batch_i,
                             'patch_ix': min_distance_ix.item(),  # Index in a flattened array of the feature map
                             'W': W,
                             'H': H,

@@ -143,6 +143,7 @@ def run_tree(args=None):
         PROJECT
     '''
     project_info, tree = project_with_class_constraints(deepcopy(pruned_tree), projectloader, device, args, log)
+    import ipdb; ipdb.set_trace()
     name = "pruned_and_projected"
     save_tree_description(tree, optimizer, scheduler, name, log)
     pruned_projected_tree = deepcopy(tree)
@@ -161,7 +162,7 @@ def run_tree(args=None):
     # Upsample prototype for visualization
     project_info = upsample(tree, project_info, projectloader, name, args, log)
     # visualize tree
-    # import ipdb; ipdb.set_trace()
+    
     gen_vis(tree, name, args, classes)
 
     
