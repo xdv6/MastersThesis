@@ -17,6 +17,8 @@ class Leaf(Node):
                  ):
         super().__init__(index)
 
+        # lijn 75
+        print("let op xdv_softmax_afgezet")
         # Initialize the distribution parameters
         if args.disable_derivative_free_leaf_optim:
             self._dist_params = nn.Parameter(torch.randn(num_classes), requires_grad=True)
@@ -63,11 +65,15 @@ class Leaf(Node):
 
     def distribution(self) -> torch.Tensor:
         if not self._kontschieder_normalization:
+            # print("xdv:", self._dist_params)
             if self._log_probabilities:
                 return F.log_softmax(self._dist_params, dim=0)
             else:
                 # Return numerically stable softmax (see http://www.deeplearningbook.org/contents/numerical.html)
-                return F.softmax(self._dist_params - torch.max(self._dist_params), dim=0)
+                
+                # return F.softmax(self._dist_params - torch.max(self._dist_params), dim=0)
+                import ipdb; ipdb.set_trace()
+                return self._dist_params
         
         else:
             #kontschieder_normalization's version that uses a normalization factor instead of softmax:

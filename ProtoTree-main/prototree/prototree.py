@@ -162,7 +162,7 @@ class ProtoTree(nn.Module):
         info['pa_tensor'] = {n.index: attr[n, 'pa'].unsqueeze(1) for n in self.nodes}
         # Store the output probabilities of all decision nodes in the tree
         info['ps'] = {n.index: attr[n, 'ps'].unsqueeze(1) for n in self.branches}
-
+        # import ipdb; ipdb.set_trace()
         # Generate the output based on the chosen sampling strategy
         if sampling_strategy == ProtoTree.SAMPLING_STRATEGIES[0]:  # Distributed
             return out, info
@@ -216,7 +216,7 @@ class ProtoTree(nn.Module):
             dists = [attr[path[-1], 'ds'][0] for path in routing]
             # Concatenate the dists in a new batch dimension
             dists = torch.cat([dist.unsqueeze(0) for dist in dists], dim=0).to(device=xs.device)
-
+            
             # Store info
             info['out_leaf_ix'] = [path[-1].index for path in routing]
 

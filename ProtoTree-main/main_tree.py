@@ -161,7 +161,7 @@ def run_tree(args=None):
     # Upsample prototype for visualization
     project_info = upsample(tree, project_info, projectloader, name, args, log)
     # visualize tree
-    import ipdb; ipdb.set_trace()
+    # import ipdb; ipdb.set_trace()
     gen_vis(tree, name, args, classes)
 
     
