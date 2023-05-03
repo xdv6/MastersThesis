@@ -74,6 +74,7 @@ def run_tree(args=None):
         '''
             TRAIN AND EVALUATE TREE
         '''
+        # epoch starts with 1
         for epoch in range(epoch, args.epochs + 1):
             log.log_message("\nEpoch %s"%str(epoch))
             # Freeze (part of) network for some epochs if indicated in args

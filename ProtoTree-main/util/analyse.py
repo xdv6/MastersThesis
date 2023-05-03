@@ -73,6 +73,7 @@ def analyse_leafs(tree: ProtoTree, epoch: int, k: int, leaf_labels: dict, thresh
         if tree.depth<=4:
             log.log_message("class distributions of leaves:")
             for leaf in tree._root.leaves:
+                
                 if leaf._log_probabilities:
                     log.log_message(str(leaf.index)+", "+str(leaf._dist_params)+", "+str(torch.exp(leaf.distribution())))
                 else:

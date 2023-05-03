@@ -30,23 +30,23 @@ from dqn_util import *
 
 
 if __name__ == '__main__':
+    args = get_args()
 
     """
     initialize wandb
     """
     config =  {
-    "BATCH_SIZE":64,
+    "BATCH_SIZE":args.batch_size,
     "GAMMA" : 0.999,
     "EPS_START": 1,
     "EPS_END" : 0.1,
     "lr":0.0001, 
     # multiple of 64
-    "REPLAY_BUFFER":128,
+    "REPLAY_BUFFER":64,
     "EPISODES": 1,
-    "TARGET_UPDATE": 20,
+    "TARGET_UPDATE": 25,
     "SAVE_FREQ": 10,
-    "RESET_ENV_FREQ": 150,
-    "DDQN": False,
+    "RESET_ENV_FREQ": 70,
     "MODEL_dir_file": "./model/stop_border_lagere_lr",
     }
     run = wandb.init(project="test_dqn_tree", entity="xdvisch", config=config)
@@ -55,7 +55,7 @@ if __name__ == '__main__':
     setup Prototree logging variables
     """
 
-    args = get_args()
+    
     # Create a logger
     log = Log(args.log_dir)
     print("Log dir: ", args.log_dir, flush=True)
@@ -112,10 +112,17 @@ if __name__ == '__main__':
     features_net, add_on_layers = get_network(num_channels, args)
     
     policy_net = ProtoTree(num_classes=n_actions, feature_net = features_net, args = args, add_on_layers = add_on_layers)
+    # import ipdb; ipdb.set_trace()
     policy_net = policy_net.to(device=device)
+
+
 
     # Determine which optimizer should be used to update the policy_net parameters
     optimizer, params_to_freeze, params_to_train = get_optimizer(policy_net, args)
+
+    # Freeze parames of VGG-network 
+    freeze(policy_net, 1, params_to_freeze, params_to_train, args, log)
+
     scheduler = torch.optim.lr_scheduler.MultiStepLR(optimizer=optimizer, milestones=args.milestones, gamma=args.gamma)
     policy_net, epoch = init_tree(policy_net, optimizer, scheduler, device, args)
     
@@ -192,8 +199,6 @@ if __name__ == '__main__':
             if len(memory) > config.get("BATCH_SIZE"):
                 # Perform one step of the optimization 
                 log.log_message(f"\nEpoch {str(epoch)} - Step {str(t)}")
-                # Freeze (part of) network for some epochs if indicated in args
-                freeze(policy_net, epoch, params_to_freeze, params_to_train, args, log)
                 log_learning_rates(optimizer, args, log)
                 train_info = train_epoch(config, memory, policy_net, target_net, optimizer, epoch, args.disable_derivative_free_leaf_optim, device, log, log_prefix)
                 save_tree(policy_net, optimizer, scheduler, epoch, log, args)
@@ -247,7 +252,7 @@ if __name__ == '__main__':
     PROJECT
     '''
     project_info, policy_net = project_dqn_tree(config, memory, deepcopy(pruned_tree), device, args, log)
-    print(project_info)
+    # print(project_info)
 
 
     name = "pruned_and_projected"
@@ -257,7 +262,7 @@ if __name__ == '__main__':
     # Upsample prototype for visualization
     project_info = upsample_with_dqn(policy_net, project_info, memory, name, args, log)
     # visualize policy_net
-    classes = ['down', 'left', 'right', 'up']
+    classes = ['right', 'down', 'left', 'up']
     gen_vis(policy_net, name, args, classes)
 
 
