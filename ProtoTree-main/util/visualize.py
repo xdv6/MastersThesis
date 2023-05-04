@@ -11,7 +11,7 @@ from prototree.prototree import ProtoTree
 from prototree.branch import Branch
 from prototree.leaf import Leaf
 from prototree.node import Node
-
+import torch.nn.functional as F
 
 def gen_vis(tree: ProtoTree, folder_name: str, args: argparse.Namespace, classes:tuple):
     destination_folder=os.path.join(args.log_dir,folder_name)
@@ -46,7 +46,10 @@ def _leaf_vis(node: Leaf):
     if node._log_probabilities:
         ws = copy.deepcopy(torch.exp(node.distribution()).cpu().detach().numpy())
     else:
-        ws = copy.deepcopy(node.distribution().cpu().detach().numpy())
+        print("xdv: visualize aangepast lijn 49")
+         
+        # ws = copy.deepcopy(node.distribution().cpu().detach().numpy())
+        ws = copy.deepcopy(F.softmax(node.distribution() - torch.max(node.distribution()), dim=0).cpu().detach().numpy())
     
     ws = np.ones(ws.shape) - ws
     ws *= 255
@@ -118,7 +121,7 @@ def _gen_dot_nodes(node: Node, destination_folder: str, upsample_dir: str, class
         if node._log_probabilities:
             ws = copy.deepcopy(torch.exp(node.distribution()).cpu().detach().numpy())
         else:
-            ws = copy.deepcopy(node.distribution().cpu().detach().numpy())
+            ws = copy.deepcopy(F.softmax(node.distribution() - torch.max(node.distribution())).cpu().detach().numpy())
         argmax = np.argmax(ws)
         targets = [argmax] if argmax.shape == () else argmax.tolist()
         class_targets = copy.deepcopy(targets)
@@ -154,7 +157,7 @@ def _gen_dot_edges(node: Node, classes:tuple):
         if node._log_probabilities:
             ws = copy.deepcopy(torch.exp(node.distribution()).cpu().detach().numpy())
         else:
-            ws = copy.deepcopy(node.distribution().cpu().detach().numpy())
+            ws = copy.deepcopy(F.softmax(node.distribution() - torch.max(node.distribution())).cpu().detach().numpy())
         argmax = np.argmax(ws)
         targets = [argmax] if argmax.shape == () else argmax.tolist()
         class_targets = copy.deepcopy(targets)

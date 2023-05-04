@@ -5,6 +5,8 @@ from prototree.node import Node
 from util.log import Log
 from copy import deepcopy
 import torch
+import torch.nn.functional as F
+
 
 # Collects the nodes 
 def nodes_to_prune_based_on_leaf_dists_threshold(tree: ProtoTree, threshold: float) -> list:
@@ -23,14 +25,14 @@ def has_max_prob_lower_threshold(node: Node, threshold: float):
                 if torch.max(torch.exp(leaf.distribution())).item() > threshold: 
                     return False
             else:
-                if torch.max(leaf.distribution()).item() > threshold: 
+                if torch.max(F.softmax(leaf.distribution() - torch.max(leaf.distribution()))).item() > threshold: 
                     return False
     elif isinstance(node, Leaf):
         if node._log_probabilities:
             if torch.max(torch.exp(node.distribution())).item() > threshold: 
                 return False
         else:
-            if torch.max(node.distribution()).item() > threshold: 
+            if torch.max(F.softmax(node.distribution() - torch.max(node.distribution()))).item() > threshold: 
                 return False
     else:
         raise Exception('This node type should not be possible. A tree has branches and leaves.')
