@@ -17,7 +17,7 @@ class Leaf(Node):
                  ):
         super().__init__(index)
 
-
+        print("let op xdv_softmax_afgezet-leaf.py-lijn-76")
         # Initialize the distribution parameters
         if args.disable_derivative_free_leaf_optim:
             self._dist_params = nn.Parameter(torch.randn(num_classes), requires_grad=True)
@@ -71,7 +71,7 @@ class Leaf(Node):
                 # Return numerically stable softmax (see http://www.deeplearningbook.org/contents/numerical.html)
                 
                 # return F.softmax(self._dist_params - torch.max(self._dist_params), dim=0)
-                print("let op xdv_softmax_afgezet-leaf.py-lijn-76")
+                
                 return self._dist_params
         
         else:

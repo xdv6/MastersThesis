@@ -14,6 +14,7 @@ from prototree.node import Node
 import torch.nn.functional as F
 
 def gen_vis(tree: ProtoTree, folder_name: str, args: argparse.Namespace, classes:tuple):
+    print("xdv: visualize aangepast lijn 49")
     destination_folder=os.path.join(args.log_dir,folder_name)
     upsample_dir = os.path.join(os.path.join(args.log_dir, args.dir_for_saving_images), folder_name)
     if not os.path.isdir(destination_folder):
@@ -46,7 +47,7 @@ def _leaf_vis(node: Leaf):
     if node._log_probabilities:
         ws = copy.deepcopy(torch.exp(node.distribution()).cpu().detach().numpy())
     else:
-        print("xdv: visualize aangepast lijn 49")
+        
          
         # ws = copy.deepcopy(node.distribution().cpu().detach().numpy())
         ws = copy.deepcopy(F.softmax(node.distribution() - torch.max(node.distribution()), dim=0).cpu().detach().numpy())
