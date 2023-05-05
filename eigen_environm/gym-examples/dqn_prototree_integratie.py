@@ -5,7 +5,7 @@ import gym_game
 import pygame
 import wandb
 
-sys.path.append(os.path.abspath('../../Prototree-main'))
+sys.path.append(os.path.abspath('../../ProtoTree-main'))
 
 from prototree.prototree import ProtoTree
 from util.log import Log
@@ -43,7 +43,7 @@ if __name__ == '__main__':
     "lr":0.0001, 
     # multiple of 64
     "REPLAY_BUFFER":960,
-    "EPISODES": 1,
+    "EPISODES": 50,
     "TARGET_UPDATE": 25,
     "SAVE_FREQ": 10,
     "RESET_ENV_FREQ": 200,
