@@ -122,7 +122,7 @@ def _gen_dot_nodes(node: Node, destination_folder: str, upsample_dir: str, class
         if node._log_probabilities:
             ws = copy.deepcopy(torch.exp(node.distribution()).cpu().detach().numpy())
         else:
-            ws = copy.deepcopy(F.softmax(node._dist_params - torch.max(node._dist_params), dim=0).cpu().detach().numpy())
+            ws = copy.deepcopy(F.softmax(node.distribution() - torch.max(node.distribution()), dim=0).cpu().detach().numpy())
         argmax = np.argmax(ws)
         targets = [argmax] if argmax.shape == () else argmax.tolist()
         class_targets = copy.deepcopy(targets)
@@ -158,7 +158,7 @@ def _gen_dot_edges(node: Node, classes:tuple):
         if node._log_probabilities:
             ws = copy.deepcopy(torch.exp(node.distribution()).cpu().detach().numpy())
         else:
-            ws = copy.deepcopy(F.softmax(node._dist_params - torch.max(node._dist_params), dim=0).cpu().detach().numpy())
+            ws = copy.deepcopy(F.softmax(node.distribution() - torch.max(node.distribution()), dim=0).cpu().detach().numpy())
         argmax = np.argmax(ws)
         targets = [argmax] if argmax.shape == () else argmax.tolist()
         class_targets = copy.deepcopy(targets)

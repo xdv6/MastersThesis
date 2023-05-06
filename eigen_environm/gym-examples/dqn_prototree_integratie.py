@@ -201,9 +201,6 @@ if __name__ == '__main__':
                 # log.log_message(f"\nEpoch {str(epoch)} - Step {str(t)}")
                 # log_learning_rates(optimizer, args, log)
                 train_info = train_epoch(config, memory, policy_net, target_net, optimizer, epoch, args.disable_derivative_free_leaf_optim, device, log, log_prefix)
-                save_tree(policy_net, optimizer, scheduler, epoch, log, args)
-                # best_train_acc = save_best_train_tree(policy_net, optimizer, scheduler, best_train_acc, train_info['train_accuracy'], log)
-                # leaf_labels = analyse_leafs(policy_net, epoch, n_actions, leaf_labels, args.pruning_threshold_leaves, log)
 
             # if agent did not reach target after RESET_ENV_FREQ actions, reset environment
             if (t + 1) % config.get("RESET_ENV_FREQ") == 0:
@@ -225,7 +222,8 @@ if __name__ == '__main__':
                 wandb.log({"buffer_size": len(memory)})
                 break
             
-
+        save_tree(policy_net, optimizer, scheduler, epoch, log, args)
+        leaf_labels = analyse_leafs(policy_net, epoch, n_actions, leaf_labels, args.pruning_threshold_leaves, log)
         # Update the target network, copying all weights and biases to target DQN
         if epoch % config.get("TARGET_UPDATE") == 0:
             target_net = deepcopy(policy_net)

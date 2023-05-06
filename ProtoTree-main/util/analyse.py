@@ -77,7 +77,7 @@ def analyse_leafs(tree: ProtoTree, epoch: int, k: int, leaf_labels: dict, thresh
                 if leaf._log_probabilities:
                     log.log_message(str(leaf.index)+", "+str(leaf._dist_params)+", "+str(torch.exp(leaf.distribution())))
                 else:
-                    log.log_message(str(leaf.index)+", "+str(leaf._dist_params)+", "+str(leaf.distribution()))
+                    log.log_message(str(leaf.index)+", "+str(F.softmax(leaf._dist_params - torch.max(leaf._dist_params), dim=0))+", "+str(leaf.distribution()))
 
 
         leaf_labels[epoch] = []
