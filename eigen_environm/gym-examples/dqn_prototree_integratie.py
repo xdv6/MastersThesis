@@ -40,8 +40,8 @@ if __name__ == '__main__':
     "GAMMA" : 0.95,
     "EPS_END" : 0.1,
     # multiple of 64
-    "REPLAY_BUFFER":960,
-    "EPISODES": 100,
+    "REPLAY_BUFFER":4800,
+    "EPISODES": 70,
     "TARGET_UPDATE": 25,
     "SAVE_FREQ": 10,
     "RESET_ENV_FREQ": 300,
@@ -256,6 +256,7 @@ if __name__ == '__main__':
     # Upsample prototype for visualization
     project_info = upsample_with_dqn(policy_net, project_info, memory, name, args, log)
     print(project_info)
+    log.log_message(str(project_info))
     # visualize policy_net
     classes = ['right', 'down', 'left', 'up']
     gen_vis(policy_net, name, args, classes)

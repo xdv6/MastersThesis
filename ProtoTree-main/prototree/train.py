@@ -77,6 +77,7 @@ def train_epoch(tree: ProtoTree,
             tree.eval()
             with torch.no_grad():
                 target = eye[ys] #shape (batchsize, num_classes) 
+                import ipdb; ipdb.set_trace()
                 for leaf in tree.leaves:  
                     if tree._log_probabilities:
                         # log version
