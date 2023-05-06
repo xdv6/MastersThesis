@@ -3,7 +3,7 @@
 
 ### main integratie args
 
-```python3 dqn_prototree_integratie.py --epochs 2000  --dataset gridpath --lr 0.01 --lr_block 0.01 --lr_net 1e-2 --num_features 3 --depth 3 --net vgg11 --freeze_epochs 2000 --pruning_threshold_leaves 0.4 --disable_derivative_free_leaf_optim --batch_size 64 --log_dir ./runs/test_vis```
+```python3 dqn_prototree_integratie.py --epochs 2000  --dataset gridpath --lr 0.01 --lr_block 0.01 --lr_net 1e-2 --num_features 3 --depth 3 --net vgg11 --freeze_epochs 2000 --pruning_threshold_leaves 0.4 --disable_derivative_free_leaf_optim --batch_size 64 --log_dir ./runs/vis_softmax_50```
 
 ### Job scheduling gpulab
 

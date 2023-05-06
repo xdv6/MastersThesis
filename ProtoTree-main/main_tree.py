@@ -171,12 +171,6 @@ def run_tree(args=None):
 
 
 
-def get_libraries():
-    subprocess.check_call([sys.executable, "-m", "pip", "install", "opencv-python"])
-    subprocess.call("sudo add-apt-repository universe", shell=True)
-    subprocess.call("sudo apt update", shell=True)
-    subprocess.call("sudo apt install graphviz", shell=True)
-
 
 
 if __name__ == '__main__':
