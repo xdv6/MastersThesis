@@ -82,9 +82,7 @@ if __name__ == '__main__':
     setup DQN logging variables
     """
     win_count = 0
-    achieved_rewards = torch.tensor([], device=device)
-    running_sum = achieved_rewards.sum()
-    counter = achieved_rewards.numel()
+
 
     """
     setup gridpath environment
@@ -156,12 +154,13 @@ if __name__ == '__main__':
     # Define which metrics to plot against that x-axis
     wandb.define_metric("reached_target", step_metric='episode')
     wandb.define_metric("win_count", step_metric='episode')
-    wandb.define_metric("mean_reward", step_metric='episode')
+    wandb.define_metric("mean_reward_over_episode", step_metric='episode')
     wandb.define_metric("number_of_actions_in_episode", step_metric='episode')
 
     memory = ReplayMemory(config.get("REPLAY_BUFFER"))
 
     for epoch in range(config.get("EPISODES")):
+        achieved_rewards = torch.tensor([], device=device)
         # Initialize the environment and state
         env.reset()
 
@@ -174,13 +173,10 @@ if __name__ == '__main__':
             # wrapped._render_frame()
             action = select_action(state, policy_net, n_actions, config)
             _, reward, done, _, _ = env.step(action.item())
-            
-            running_sum += reward
-            counter += 1
-            mean = running_sum / counter
 
             reward = torch.tensor([reward], device=device)
-            
+            achieved_rewards = torch.cat((achieved_rewards, reward))
+
             if not done:
                 next_state = get_screen(env)
             else:
@@ -218,12 +214,11 @@ if __name__ == '__main__':
                 wandb.log(log_dict)
                 wandb.log({"number_of_actions_in_episode": t})
                 wandb.log({"win_count": win_count})
-                wandb.log({"mean_reward": mean})
+                wandb.log({"mean_reward_over_episode": torch.mean(achieved_rewards)})
                 wandb.log({"buffer_size": len(memory)})
                 break
             
-        save_tree(policy_net, optimizer, scheduler, epoch, log, args)
-        leaf_labels = analyse_leafs(policy_net, epoch, n_actions, leaf_labels, args.pruning_threshold_leaves, log)
+
         # Update the target network, copying all weights and biases to target DQN
         if epoch % config.get("TARGET_UPDATE") == 0:
             target_net = deepcopy(policy_net)
@@ -233,6 +228,9 @@ if __name__ == '__main__':
         #     torch.save(policy_net, config.get("MODEL_dir_file") + str(epoch) + '.pkl')
 
     print('Complete')
+    save_tree(policy_net, optimizer, scheduler, epoch, log, args)
+    leaf_labels = analyse_leafs(policy_net, epoch, n_actions, leaf_labels, args.pruning_threshold_leaves, log)
+    
     env.render()
     env.close()
 
