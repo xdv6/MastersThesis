@@ -38,12 +38,10 @@ if __name__ == '__main__':
     config =  {
     "BATCH_SIZE":args.batch_size,
     "GAMMA" : 0.999,
-    "EPS_START": 1,
     "EPS_END" : 0.1,
-    "lr":0.0001, 
     # multiple of 64
     "REPLAY_BUFFER":960,
-    "EPISODES": 50,
+    "EPISODES": 100,
     "TARGET_UPDATE": 25,
     "SAVE_FREQ": 10,
     "RESET_ENV_FREQ": 200,
@@ -118,7 +116,7 @@ if __name__ == '__main__':
     # Determine which optimizer should be used to update the policy_net parameters
     optimizer, params_to_freeze, params_to_train = get_optimizer(policy_net, args)
 
-    # Freeze parames of VGG-network 
+    # Freeze params of VGG-network 
     freeze(policy_net, 1, params_to_freeze, params_to_train, args, log)
 
     scheduler = torch.optim.lr_scheduler.MultiStepLR(optimizer=optimizer, milestones=args.milestones, gamma=args.gamma)
@@ -230,7 +228,7 @@ if __name__ == '__main__':
     print('Complete')
     save_tree(policy_net, optimizer, scheduler, epoch, log, args)
     leaf_labels = analyse_leafs(policy_net, epoch, n_actions, leaf_labels, args.pruning_threshold_leaves, log)
-    
+
     env.render()
     env.close()
 
