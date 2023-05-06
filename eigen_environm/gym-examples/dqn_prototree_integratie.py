@@ -49,7 +49,7 @@ if __name__ == '__main__':
     "RESET_ENV_FREQ": 200,
     "MODEL_dir_file": "./model/stop_border_lagere_lr",
     }
-    run = wandb.init(project="test_dqn_tree", entity="xdvisch", config=config)
+    run = wandb.init(project="test_vis", entity="xdvisch", config=config)
 
     """
     setup Prototree logging variables
@@ -198,12 +198,12 @@ if __name__ == '__main__':
             """
             if len(memory) > config.get("BATCH_SIZE"):
                 # Perform one step of the optimization 
-                log.log_message(f"\nEpoch {str(epoch)} - Step {str(t)}")
-                log_learning_rates(optimizer, args, log)
+                # log.log_message(f"\nEpoch {str(epoch)} - Step {str(t)}")
+                # log_learning_rates(optimizer, args, log)
                 train_info = train_epoch(config, memory, policy_net, target_net, optimizer, epoch, args.disable_derivative_free_leaf_optim, device, log, log_prefix)
                 save_tree(policy_net, optimizer, scheduler, epoch, log, args)
                 # best_train_acc = save_best_train_tree(policy_net, optimizer, scheduler, best_train_acc, train_info['train_accuracy'], log)
-                leaf_labels = analyse_leafs(policy_net, epoch, n_actions, leaf_labels, args.pruning_threshold_leaves, log)
+                # leaf_labels = analyse_leafs(policy_net, epoch, n_actions, leaf_labels, args.pruning_threshold_leaves, log)
 
             # if agent did not reach target after RESET_ENV_FREQ actions, reset environment
             if (t + 1) % config.get("RESET_ENV_FREQ") == 0:
