@@ -25,14 +25,14 @@ def has_max_prob_lower_threshold(node: Node, threshold: float):
                 if torch.max(torch.exp(leaf.distribution())).item() > threshold: 
                     return False
             else:
-                if torch.max(F.softmax(leaf._dist_params - torch.max(leaf._dist_params), dim=0)).item() > threshold: 
+                if torch.max(F.softmax(leaf.distribution() - torch.max(leaf.distribution()), dim=0)).item() > threshold: 
                     return False
     elif isinstance(node, Leaf):
         if node._log_probabilities:
             if torch.max(torch.exp(node.distribution())).item() > threshold: 
                 return False
         else:
-            if torch.max(F.softmax(node._dist_params - torch.max(node._dist_params), dim=0)).item() > threshold: 
+            if torch.max(F.softmax(node.distribution() - torch.max(node.distribution()), dim=0)).item() > threshold: 
                 return False
     else:
         raise Exception('This node type should not be possible. A tree has branches and leaves.')
