@@ -29,7 +29,7 @@ import torchvision.transforms as transforms
 from torchvision.transforms import ToTensor, Normalize, Compose, Lambda
 from torch.utils.data import TensorDataset, DataLoader
 
-resize = T.Compose([T.ToPILImage(),T.Resize(150, interpolation=Image.CUBIC),T.ToTensor()])
+resize = T.Compose([T.ToPILImage(),T.Resize(170, interpolation=Image.CUBIC),T.ToTensor()])
 Transition = namedtuple('Transition', ('state', 'action', 'next_state', 'reward'))
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
