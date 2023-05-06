@@ -105,13 +105,14 @@ def train_epoch(config: dict,
         #Make sure the policy_net is in eval mode
         policy_net.eval()
         with torch.no_grad():
-            target = eye[ys] #shape (batchsize, num_classes) 
+            target = eye[expected_state_action_values] #shape (batchsize, num_classes) 
             for leaf in policy_net.leaves:  
                 if policy_net._log_probabilities:
                     # log version
                     update = torch.exp(torch.logsumexp(info['pa_tensor'][leaf.index] + leaf.distribution() + torch.log(target) - ys_pred, dim=0))
                 else:
-                    update = torch.sum((info['pa_tensor'][leaf.index] * leaf.distribution() * target)/ys_pred, dim=0)  
+                    # update = torch.sum((info['pa_tensor'][leaf.index] * leaf.distribution() * target)/ys_pred, dim=0)  
+                    update = torch.sum((info['pa_tensor'][leaf.index] * (leaf.distribution() - target)) /state_action_values, dim=0)  
                 leaf._dist_params -= (_old_dist_params[leaf]/nr_batches)
                 F.relu_(leaf._dist_params) #dist_params values can get slightly negative because of floating point issues. therefore, set to zero.
                 leaf._dist_params += update

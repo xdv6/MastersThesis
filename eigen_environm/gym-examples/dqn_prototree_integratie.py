@@ -37,14 +37,14 @@ if __name__ == '__main__':
     """
     config =  {
     "BATCH_SIZE":args.batch_size,
-    "GAMMA" : 0.999,
+    "GAMMA" : 0.95,
     "EPS_END" : 0.1,
     # multiple of 64
     "REPLAY_BUFFER":960,
     "EPISODES": 100,
     "TARGET_UPDATE": 25,
     "SAVE_FREQ": 10,
-    "RESET_ENV_FREQ": 200,
+    "RESET_ENV_FREQ": 300,
     "MODEL_dir_file": "./model/stop_border_lagere_lr",
     }
     run = wandb.init(project="test_vis", entity="xdvisch", config=config)
