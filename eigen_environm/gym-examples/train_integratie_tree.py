@@ -111,7 +111,6 @@ def train_epoch(config: dict,
                     # log version
                     update = torch.exp(torch.logsumexp(info['pa_tensor'][leaf.index] + leaf.distribution() + torch.log(expected_state_action_values) - ys_pred, dim=0))
                 else:
-                    import ipdb; ipdb.set_trace()
                     # update = torch.sum((info['pa_tensor'][leaf.index] * leaf.distribution() * target)/ys_pred, dim=0)  
                     update = torch.sum((info['pa_tensor'][leaf.index] * (leaf.distribution() - expected_state_action_values)) /state_action_values, dim=0)  
                 leaf._dist_params -= (_old_dist_params[leaf]/nr_batches)
