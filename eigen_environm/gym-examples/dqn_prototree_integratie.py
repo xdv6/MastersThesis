@@ -258,7 +258,7 @@ if __name__ == '__main__':
     print(project_info)
     log.log_message(str(project_info))
     # visualize policy_net
-    classes = ['right', 'down', 'left', 'up']
+    classes = ['right', 'left', 'up']
     gen_vis(policy_net, name, args, classes)
 
 

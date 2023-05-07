@@ -36,10 +36,13 @@ env = gym.make("GridWorld-v0", render_mode="rgb_array")
 
 env.reset()
 action = 3
-_, reward, done, _, _ = env.step(3)
+# _, reward, done, _, _ = env.step(3)
+# _, reward, done, _, _ = env.step(2)
+# _, reward, done, _, _ = env.step(0)
+_, reward, done, _, _ = env.step(2)
 _, reward, done, _, _ = env.step(2)
 _, reward, done, _, _ = env.step(0)
-_, reward, done, _, _ = env.step(1)
+_, reward, done, _, _ = env.step(3)
 # import ipdb; ipdb.set_trace()
 screen = env.render()
 

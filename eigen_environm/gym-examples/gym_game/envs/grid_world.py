@@ -35,7 +35,7 @@ class GridWorldEnv(gym.Env):
         )
 
         # We have 4 actions, corresponding to "right", "up", "left", "down", "right"
-        self.action_space = spaces.Discrete(4)
+        self.action_space = spaces.Discrete(3)
 
         """
         The following dictionary maps abstract actions from `self.action_space` to 
@@ -44,11 +44,11 @@ class GridWorldEnv(gym.Env):
         """
         self._action_to_direction = {
             0: np.array([1, 0]),
-            1: np.array([0, 1]),
-            2: np.array([-1, 0]),
-            3: np.array([0, -1]),
+            # 1: np.array([0, 1]),
+            1: np.array([-1, 0]),
+            2: np.array([0, -1]),
             # noop for testing with keyboard
-            # 4: np.array([0,0])
+            # 3: np.array([0,0])
         }
 
         assert render_mode is None or render_mode in self.metadata["render_modes"]
@@ -87,7 +87,7 @@ class GridWorldEnv(gym.Env):
 
         # targetlocatie
         coo_target_x = int(645/ self.pix_square_size)
-        coo_target_y = int(45/self.pix_square_size)
+        coo_target_y = int(30/self.pix_square_size)
 
         self._target_location = np.array([coo_target_x, coo_target_y], dtype=np.int32)
 
