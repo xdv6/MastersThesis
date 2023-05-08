@@ -178,7 +178,7 @@ if __name__ == '__main__':
                 # Perform one step of the optimization 
                 # log.log_message(f"\nEpoch {str(epoch)} - Step {str(t)}")
                 # log_learning_rates(optimizer, args, log)
-                train_info = train_epoch(config, memory, policy_net, target_net, optimizer, epoch, args.disable_derivative_free_leaf_optim, device, log, log_prefix)
+                train_info = train_epoch(config, memory, policy_net, target_net, optimizer, epoch, args.disable_derivative_free_leaf_optim, device, log)
 
             # if agent did not reach target after RESET_ENV_FREQ actions, reset environment
             if (t + 1) % config.get("RESET_ENV_FREQ") == 0:
