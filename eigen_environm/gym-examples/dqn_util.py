@@ -4,14 +4,10 @@ import gym_game
 import pygame
 import math
 import random
-import numpy as np
 from collections import namedtuple
 from itertools import count
 from PIL import Image
 import torch
-import torch.nn as nn
-import torch.optim as optim
-import torch.nn.functional as F
 import torchvision.transforms as T
 import pkg_resources
 import time
@@ -20,14 +16,10 @@ import matplotlib.pyplot as plt
 
 import numpy as np
 import argparse
-import os
-import torch
 import torch.optim
 import torch.utils.data
 import torchvision
-import torchvision.transforms as transforms
 from torchvision.transforms import ToTensor, Normalize, Compose, Lambda
-from torch.utils.data import TensorDataset, DataLoader
 
 resize = T.Compose([T.ToPILImage(),T.Resize(195, interpolation=Image.CUBIC),T.ToTensor()])
 Transition = namedtuple('Transition', ('state', 'action', 'next_state', 'reward'))

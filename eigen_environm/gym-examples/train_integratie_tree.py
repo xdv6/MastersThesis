@@ -20,8 +20,6 @@ import matplotlib.pyplot as plt
 import torchvision.transforms as transforms
 
 from util.log import Log
-
-from util.log import Log
 import wandb
 
 # Create a transformation to convert the tensor to a PIL Image
