@@ -40,7 +40,7 @@ if __name__ == '__main__':
     "GAMMA" : 0.95,
     "EPS_END" : 0.1,
     # hast to be multiple of batch size
-    "REPLAY_BUFFER":4800,
+    "REPLAY_BUFFER":128,
     "EPISODES": args.epochs,
     "TARGET_UPDATE": 25,
     "SAVE_FREQ": 10,
