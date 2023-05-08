@@ -33,32 +33,28 @@ if __name__ == '__main__':
     args = get_args()
 
     """
-    initialize wandb
+    initialize wandb and setup DQN logging variables and hyperparameters
     """
     config =  {
     "BATCH_SIZE":args.batch_size,
     "GAMMA" : 0.95,
     "EPS_END" : 0.1,
-    # multiple of 64
+    # hast to be multiple of batch size
     "REPLAY_BUFFER":4800,
-    "EPISODES": 70,
+    "EPISODES": args.epochs,
     "TARGET_UPDATE": 25,
     "SAVE_FREQ": 10,
     "RESET_ENV_FREQ": 300,
-    "MODEL_dir_file": "./model/stop_border_lagere_lr",
+    "MODEL_dir_file": "./model/save_freq",
     }
-    run = wandb.init(project="test_vis", entity="xdvisch", config=config)
+    run = wandb.init(project="refactor", entity="xdvisch", config=config)
 
-    """
-    setup Prototree logging variables
-    """
+    win_count = 0
 
     
     # Create a logger
     log = Log(args.log_dir)
     print("Log dir: ", args.log_dir, flush=True)
-    # Create a csv log for storing the test accuracy, mean train accuracy and mean loss for each epoch
-    log.create_log('log_epoch_overview', 'epoch', 'test_acc', 'mean_train_acc', 'mean_train_crossentropy_loss_during_epoch')
     # Log the run arguments
     save_args(args, log.metadata_dir)
     if not args.disable_cuda and torch.cuda.is_available():
@@ -70,17 +66,6 @@ if __name__ == '__main__':
     # Log which device was actually used
     log.log_message('Device used: '+str(device))
 
-    # Create a log for logging the loss values
-    log_prefix = 'log_train_epochs'
-    log_loss = log_prefix+'_losses'
-    log.create_log(log_loss, 'epoch', 'batch', 'loss', 'batch_train_acc')
-
-
-    """
-    setup DQN logging variables
-    """
-    win_count = 0
-
 
     """
     setup gridpath environment
@@ -88,6 +73,7 @@ if __name__ == '__main__':
 
     env = gym.make("GridWorld-v0", render_mode="rgb_array").unwrapped
     env.reset()
+    classes = ['right', 'left', 'up']
     n_actions = env.action_space.n
     
 
@@ -129,8 +115,6 @@ if __name__ == '__main__':
     target_net = deepcopy(policy_net)
 
     leaf_labels = dict()
-    best_train_acc = 0.
-    best_test_acc = 0.
 
     """
     Train the policy_net
@@ -258,7 +242,6 @@ if __name__ == '__main__':
     print(project_info)
     log.log_message(str(project_info))
     # visualize policy_net
-    classes = ['right', 'left', 'up']
     gen_vis(policy_net, name, args, classes)
 
 
