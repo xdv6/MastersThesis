@@ -83,8 +83,8 @@ def select_action(state, config, policy_net, n_actions, device):
     sample = random.random()
 
 
-    # eps_threshold = config.get("EPS_END") + (config.get("EPS_START") - config.get("EPS_END")) * math.exp(-1. * steps_done / config.get("EPS_DECAY"))
-    eps_threshold = config.get("EPS_END")
+    eps_threshold = config.get("EPS_END") + (config.get("EPS_START") - config.get("EPS_END")) * math.exp(-1. * steps_done / config.get("EPS_DECAY"))
+    # eps_threshold = config.get("EPS_END")
 
     wandb.log({"eps_threshold": eps_threshold})
     steps_done += 1
