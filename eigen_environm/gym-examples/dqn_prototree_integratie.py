@@ -73,7 +73,7 @@ if __name__ == '__main__':
 
     env = gym.make("GridWorld-v0", render_mode="rgb_array").unwrapped
     env.reset()
-    classes = ['right', 'left', 'up']
+    classes = ['right', 'down', 'left', 'up']
     n_actions = env.action_space.n
     
 
