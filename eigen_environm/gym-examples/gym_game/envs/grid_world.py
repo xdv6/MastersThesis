@@ -35,7 +35,7 @@ class GridWorldEnv(gym.Env):
         )
 
         # We have 4 actions, corresponding to "right", "up", "left", "down", "right"
-        self.action_space = spaces.Discrete(3)
+        self.action_space = spaces.Discrete(4)
 
         """
         The following dictionary maps abstract actions from `self.action_space` to 
