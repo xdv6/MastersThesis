@@ -25,7 +25,7 @@ from train_integratie_tree import train_epoch, project_dqn_tree, upsample_with_d
 import torch
 from shutil import copy
 from copy import deepcopy
-from dqn_util import *
+from dqn_integratie_util import *
 
 
 

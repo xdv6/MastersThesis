@@ -18,13 +18,13 @@
 
 ### reeds getrainde ProtoTree evalueren frozen_lake 
 
-``` python main_tree.py --epochs 1 --log_dir ./runs/test_frozen_dummy_W1_100 --dataset frozen_lake --lr 0.001 --lr_block 0.001 --lr_net 1e-5 --num_features 3 --depth 4 --net vgg11 --freeze_epochs 30 --milestones 60,70,80,90,100 --W1 1 --H 100 --state_dict_dir_tree ./runs/test_test_frozen_dummy_W1_100/checkpoints/pruned_and_projected```
+``` python main_tree.py --epochs 100 --log_dir ./runs/test_frozen_dummy_W1_100 --dataset frozen_lake --lr 0.001 --lr_block 0.001 --lr_net 1e-5 --num_features 3 --depth 4 --net vgg11 --freeze_epochs 30 --milestones 60,70,80,90,100 --W1 1 --H 100 --state_dict_dir_tree ./runs/test_test_frozen_dummy_W1_100/checkpoints/pruned_and_projected```
 
 
 
 ### ProtoTree trainen frozen_lake (vgg) freezen van net weights
 
-```python3 main_tree.py --epochs 100 --log_dir ./runs/test_rescaled_210_dataset --dataset frozen_lake --lr 0.01 --lr_block 0.01 --lr_net 1e-2 --num_features 3 --depth 8 --net vgg11 --milestones 60,70,80,90,100 --freeze_epochs 100 --pruning_threshold_leaves 0.55 ```
+```python3 main_tree.py --epochs 100 --log_dir ./runs/no_freeze --dataset frozen_lake --lr 0.01 --lr_block 0.01 --lr_net 1e-2 --num_features 3 --depth 8 --net vgg11 --milestones 60,70,80,90,100 --freeze_epochs 30 --pruning_threshold_leaves 0.55 ```
 
 
 
