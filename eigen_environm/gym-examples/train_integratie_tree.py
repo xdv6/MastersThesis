@@ -6,7 +6,7 @@ import torch.nn.functional as F
 import torch.optim
 import torch.utils.data
 from torch.utils.data import DataLoader
-from dqn_util import *
+from dqn__integratie_util import *
 from prototree.prototree import ProtoTree
 
 

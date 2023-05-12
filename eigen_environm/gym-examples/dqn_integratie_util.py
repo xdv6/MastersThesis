@@ -29,7 +29,7 @@ def get_screen(env):
     screen = env.render().transpose((2, 0, 1))  # transpose into torch order (CHW)
     _, screen_height, screen_width = screen.shape
 
-     # area around agent
+    # area around agent
     # coordinaat van linkerbovenhoek rechthoek
     x_pixel_coo_agent = env._agent_location[0] * env.pix_square_size
     y_pixel_coo_agent = env._agent_location[1] * env.pix_square_size
