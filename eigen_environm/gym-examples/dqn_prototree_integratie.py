@@ -40,14 +40,14 @@ if __name__ == '__main__':
     "GAMMA" : 0.95,
     "EPS_END" : 0.1,
     # has to be multiple of batch size
-    "REPLAY_BUFFER":60,
+    "REPLAY_BUFFER":4800,
     "EPISODES": args.epochs,
     "TARGET_UPDATE": 25,
     "SAVE_FREQ": 10,
     "RESET_ENV_FREQ": 300,
     "MODEL_dir_file": "./model/save_freq",
     }
-    run = wandb.init(project="refactor", entity="xdvisch", config=config)
+    run = wandb.init(project="final_refactor", entity="xdvisch", config=config)
 
     win_count = 0
 
