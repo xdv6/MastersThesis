@@ -7,7 +7,7 @@ Deze repository bevat de code gebruikt bij het schrijven van de masterproef "Int
 * graphviz
 
 - Python 3
-- [PyTorch](https://pytorch.org/get-started/locally/) >= 1.5 and <= 1.7!
+- [PyTorch](https://pytorch.org/get-started/locally/) >= 1.5 en <= 1.7!
 - Optioneel: CUDA
 
 - numpy
