@@ -76,7 +76,7 @@ De code is ook licht aangepast voor de integratie met de DQN (zie 3) , indien de
    leaf.distribution()	
    ```
 
-2. In ``` masterproef/ProtoTree-main/prototree/leaf.py ``` op lijn 75 moet ```py return self._dist_params``` vervangen worden door ```py return F.softmax(self._dist_params - torch.max(self._dist_params), dim=0)```
+2. In ``` masterproef/ProtoTree-main/prototree/leaf.py ``` op lijn 75 moet ```return self._dist_params``` vervangen worden door ```return F.softmax(self._dist_params - torch.max(self._dist_params), dim=0)```
 
    
 
