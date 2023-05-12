@@ -46,7 +46,7 @@ De notebook ```masterproef/notebooks_frozen_lake/label_frozen_lake.ipynb``` is g
 
 In de map ```masterproef/eigen_environm/gym-examples/gym_game``` staat de code voor de eigen aangemaakte omgeving. De code maakt gebruik van een framework voorzien door de gym-library om zelf omgevingen aan te maken en er is vertrokken van volgend voorbeeld:  https://github.com/Farama-Foundation/gym-examples. De logica is geschreven in pygame.
 
-De notebooks ```masterproef/eigen_environm/gym-examples/train_gridpath.ipynb```, ```masterproef/eigen_environm/gym-examples/label_gridpath.ipynb``` en ```masterproef/eigen_environm/gym-examples/test_gridpath.ipynb``` worden respectievelijk gebruikt om de policy te trainen, testen en te labelen.
+De notebooks ```masterproef/eigen_environm/gym-examples/train_gridpath.ipynb```, ```masterproef/eigen_environm/gym-examples/label_gridpath.ipynb``` en ```masterproef/eigen_environm/gym-examples/test_gridpath.ipynb``` worden respectievelijk gebruikt om de policy te trainen, testen en labelen.
 
 De notebook ```masterproef/eigen_environm/gym-examples/test_env_keyboard.ipynb```  bevat een notebook die gebruikt is om de logica van de aangemaakte omgeving visueel te testen. Tot slot bevat het bestand ```masterproef/eigen_environm/gym-examples/process_images.ipynb``` code die gebruikt is om de afbeelding op de achtergrond in de omgeving aan te passen. 
 
@@ -76,7 +76,7 @@ De code is ook licht aangepast voor de integratie met de DQN (zie 3) , indien de
    leaf.distribution()	
    ```
 
-2. In ``` masterproef/ProtoTree-main/prototree/leaf.py ``` op lijn 75 moet ``` return self._dist_params``` vervangen worden door ```return F.softmax(self._dist_params - torch.max(self._dist_params), dim=0)```
+2. In ``` masterproef/ProtoTree-main/prototree/leaf.py ``` op lijn 75 moet ```py return self._dist_params``` vervangen worden door ```py return F.softmax(self._dist_params - torch.max(self._dist_params), dim=0)```
 
    
 
