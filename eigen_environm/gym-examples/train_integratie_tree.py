@@ -6,7 +6,7 @@ import torch.nn.functional as F
 import torch.optim
 import torch.utils.data
 from torch.utils.data import DataLoader
-from dqn__integratie_util import *
+from dqn_integratie_util import *
 from prototree.prototree import ProtoTree
 
 
@@ -158,6 +158,9 @@ def project_dqn_tree(config: dict,
     
     with torch.no_grad():
         for i in range(0, config.get("REPLAY_BUFFER") - config.get("BATCH_SIZE") + 1, config.get("BATCH_SIZE")):
+            if i >= len(memory):
+                break
+
             all_memory = memory.memory[i:i+config.get("BATCH_SIZE")]
             state_list = [transition.state for transition in all_memory]
             state_tensor = torch.squeeze(torch.stack(state_list), dim=1)

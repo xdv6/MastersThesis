@@ -39,8 +39,8 @@ if __name__ == '__main__':
     "BATCH_SIZE":args.batch_size,
     "GAMMA" : 0.95,
     "EPS_END" : 0.1,
-    # hast to be multiple of batch size
-    "REPLAY_BUFFER":128,
+    # has to be multiple of batch size
+    "REPLAY_BUFFER":60,
     "EPISODES": args.epochs,
     "TARGET_UPDATE": 25,
     "SAVE_FREQ": 10,

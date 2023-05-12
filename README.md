@@ -90,6 +90,6 @@ Het script maakt ook gebruik van de hulpbestanden ```masterproef/eigen_environm/
 
 Het script kan uitgevoerd worden ( in de directory ```masterproef/eigen_environm/gym-examples/``` ) aan de hand van onderstaand commando: 
 
-```python3 dqn_prototree_integratie.py --epochs 60 --lr 0.01 --lr_block 0.01 --num_features 3 --depth 2 --net vgg11 --pruning_threshold_leaves 0.4  --batch_size 64 --log_dir ./runs/refactor --milestones 30,50,60,70 --disable_derivative_free_leaf_optim```
+```python3 dqn_prototree_integratie.py --epochs 60 --lr 0.01 --lr_block 0.01 --num_features 3 --depth 2 --net vgg11 --pruning_threshold_leaves 0.4  --batch_size 64 --log_dir ./runs/refactor --milestones 30,50,60,70 --disable_derivative_free_leaf_optim --lr_pi 0.001```
 
 Alle argumenten die weergegeven staan kunnen aangepast worden buiten ```--net vgg11``` en ```--disable_derivative_free_leaf_optim```. De batch_size moet ook een meervoud zijn van 32.  
