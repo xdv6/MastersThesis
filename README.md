@@ -58,7 +58,7 @@ De notebook ```masterproef/eigen_environm/gym-examples/test_env_keyboard.ipynb``
 
 De map ```masterproef/ProtoTree-main``` bevat een gekloonde versie van de ProtoTree (https://github.com/M-Nauta/ProtoTree?utm_source=catalyzex.com). De code is aangepast zodat het de mogelijkheid heeft om getraind te worden op omgevingsbeelden van Frozen Lake en van de eigen aangemaakte omgeving. Om dit te doen moet respectievelijk de optie ```--dataset ``` op ```frozen_lake``` en ```gridpath``` geplaatst worden. 
 
-De code is ook licht aangepast voor de integratie met de DQN (zie 3) , indien de code wordt gebruikt voor het supervised trainen met de optie ```--disable_derivative_free_leaf_optim``` (geeft mindere resultaten) moeten er 3 bestanden licht aangepast worden: 
+De code is ook licht aangepast voor de integratie met de DQN (zie 3) , indien de code wordt gebruikt voor het supervised trainen moeten er 3 bestanden licht aangepast worden: 
 
 1)  In ```masterproef/ProtoTree-main/util/visualize.py ``` en ```masterproef/ProtoTree-main/prototree/prune.py``` moet elke voorkomst van:
 
