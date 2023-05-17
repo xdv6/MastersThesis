@@ -14,7 +14,7 @@ class GridWorldEnv(gym.Env):
         self.pix_square_size = size
 
         # background image with tracks
-        self.map = pygame.image.load("./afbeeldingen/contrast_v3.jpg")
+        self.map = pygame.image.load("./afbeeldingen/grey_last.jpg")
         self.screen_width = 1230
         self.screen_height = 990
 
@@ -199,7 +199,7 @@ class GridWorldEnv(gym.Env):
         if self.clock is None and self.render_mode == "human":
             self.clock = pygame.time.Clock()
 
-        canvas = pygame.image.load("./afbeeldingen/contrast_v3.jpg")
+        canvas = pygame.image.load("./afbeeldingen/grey_last.jpg")
         
 
         # First we draw the target
@@ -216,7 +216,7 @@ class GridWorldEnv(gym.Env):
         # Now we draw the agent
         pygame.draw.rect(
             canvas,
-            (200, 255, 255),
+            (0, 0, 255),
             pygame.Rect(
                 self.pix_square_size * self._agent_location,
                 (self.pix_square_size, self.pix_square_size),
