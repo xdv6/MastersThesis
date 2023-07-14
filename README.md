@@ -66,19 +66,20 @@ The code has also been slightly modified for integration with DQN (see section 3
    leaf.distribution()	
    ```
 
-2. In masterproef/ProtoTree-main/prototree/leaf.py, line 75 should be changed from return self._dist_params to return F.softmax(self._dist_params - torch.max(self._dist_params), dim=0).
+2. In `masterproef/ProtoTree-main/prototree/leaf.py`, line 75 should be changed from `return self._dist_params` to `return F.softmax(self._dist_params - torch.max(self._dist_params), dim=0)`.
 
    
 
 ## 3) Integration of DQN and ProtoTree
 
-The script masterproef/eigen_environm/gym-examples/dqn_prototree_integratie.py contains the code for training the DQN agent on the custom environment using ProtoTree instead of a simple CNN as in section 1.
+The script `masterproef/eigen_environm/gym-examples/dqn_prototree_integratie.py` contains the code for training the DQN agent on the custom environment using ProtoTree instead of a simple CNN as in section 1.
 
-The script also uses the helper files masterproef/eigen_environm/gym-examples/train_integratie_tree.py and masterproef/eigen_environm/gym-examples/dqn_integratie_util.py. The script masterproef/eigen_environm/gym-examples/train_integratie_tree.py contains modified code for the ProtoTree training process. The code in masterproef/eigen_environm/gym-examples/dqn_integratie_util.py is an adapted version of the DQN helper classes and methods, allowing interaction with ProtoTree.
+The script also uses the helper files `masterproef/eigen_environm/gym-examples/train_integratie_tree.py` and `masterproef/eigen_environm/gym-examples/dqn_integratie_util.py`. The script `masterproef/eigen_environm/gym-examples/train_integratie_tree.py` contains modified code for the ProtoTree training process. The code in `masterproef/eigen_environm/gym-examples/dqn_integratie_util.py` is an adapted version of the DQN helper classes and methods, allowing interaction with ProtoTree.
 
 The script can be executed (in the directory masterproef/eigen_environm/gym-examples/) using the following command:
 
-```python3 dqn_prototree_integratie.py --epochs 60 --lr 0.01 --lr_block 0.01 --num_features 3 --depth 2 --net vgg11 --pruning_threshold_leaves 0.4 --batch_size 64 --log_dir ./runs/refactor --milestones 30,50,60,70 --disable_derivative_free_leaf_optim --lr_pi 0.001
+```py
+dqn_prototree_integratie.py --epochs 60 --lr 0.01 --lr_block 0.01 --num_features 3 --depth 2 --net vgg11 --pruning_threshold_leaves 0.4 --batch_size 64 --log_dir ./runs/refactor --milestones 30,50,60,70 --disable_derivative_free_leaf_optim --lr_pi 0.001
 ```
 
 All the arguments listed can be adjusted except for --net vgg11 and --disable_derivative_free_leaf_optim. The batch size should also be a multiple of 32.
