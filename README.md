@@ -1,6 +1,6 @@
 # Interpretable deep reinforcement learning policies using prototype trees
 
-This repository contains the code used in the writing of the master's thesis titled "Interpretable deep reinforcement learning policies using prototype trees" submitted to obtain the academic degree of Master of Science in Information Engineering Technology. The thesis written in Dutch and including an English extended can be found at: https://github.com/xdv6/MastersThesis/blob/main/Masterproef.pdf
+This repository contains the code used in the writing of the master's thesis titled "Interpretable deep reinforcement learning policies using prototype trees" submitted to obtain the academic degree of Master of Science in Information Engineering Technology. The thesis written in Dutch including an English extended abstract can be found at: https://github.com/xdv6/MastersThesis/blob/main/Masterproef.pdf
 
 ## Requirements
 
